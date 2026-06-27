@@ -1,0 +1,15 @@
+//! UI modules for egui interface
+
+pub mod sidebar;
+pub mod main_content;
+pub mod status_bar;
+pub mod pipeline_view;
+pub mod dashboard_view;
+pub mod create_view;
+pub mod settings_dialog;
+pub mod license_dialog;
+pub mod components;
+
+pub use sidebar::show as sidebar;
+pub use main_content::show as main_content;
+pub use status_bar::show as status_bar;
