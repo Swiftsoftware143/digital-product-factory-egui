@@ -48,11 +48,7 @@ fn stat_card(ui: &mut Ui, label: &str, value: &str) {
 }
 
 fn show_create(app: &mut DpfApp, ctx: &Context) {
-    CentralPanel::default().show(ctx, |ui| {
-        ui.heading("Create Product");
-        ui.label("Product creation interface - fast and streamlined");
-        // TODO: Implement product creation UI
-    });
+    super::create_view::show(app, ctx);
 }
 
 fn show_research(app: &mut DpfApp, ctx: &Context) {

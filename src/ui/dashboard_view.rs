@@ -1,7 +1,7 @@
 //! Dashboard view with quick stats and recent activity
 
 use egui::*;
-use crate::app::DpfApp;
+use crate::app::{DpfApp, Tab};
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
@@ -71,15 +71,15 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 }
 
                 if ui.button("🔍 Research Market").clicked() {
-                    app.current_tab = crate::app::Tab::Research;
+                    app.current_tab = Tab::Research;
                 }
 
                 if ui.button("⚡ Generate Product").clicked() {
-                    app.current_tab = crate::app::Tab::Create;
+                    app.current_tab = Tab::Create;
                 }
 
                 if ui.button("📦 Create Bundle").clicked() {
-                    app.current_tab = crate::app::Tab::Bundles;
+                    app.current_tab = Tab::Bundles;
                 }
             });
         });

@@ -10,6 +10,8 @@ pub mod settings_dialog;
 pub mod license_dialog;
 pub mod components;
 
+pub use create_view::show as create_view;
+
 pub use sidebar::show as sidebar;
 pub use main_content::show as main_content;
 pub use status_bar::show as status_bar;

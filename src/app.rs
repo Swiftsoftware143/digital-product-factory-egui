@@ -8,7 +8,7 @@ use crate::{
     pipeline::{Pipeline, PipelineStage, ProductIdea},
     product_generator::ProductGenerator,
     license_manager::LicenseManager,
-    template_engine::TemplateRegistry,
+    templates::TemplateRegistry,
     research::MarketResearch,
     scheduler::Scheduler,
     database::Database,
@@ -57,16 +57,22 @@ pub enum Tab {
 
 impl DpfApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // Load fonts for crisp text
+        // Load fonts for crisp text (use embedded or system font)
         let mut fonts = egui::FontDefinitions::default();
-        fonts.font_data.insert(
-            "inter".to_owned(),
-            egui::FontData::from_static(include_bytes!("../assets/Inter-Regular.ttf")),
-        );
-        fonts.families
-            .entry(egui::FontFamily::Proportional)
-            .or_default()
-            .insert(0, "inter".to_owned());
+        
+        // Try to load Inter font if available, otherwise use default
+        #[cfg(feature = "embed-font")]
+        {
+            fonts.font_data.insert(
+                "inter".to_owned(),
+                egui::FontData::from_static(include_bytes!("../assets/Inter-Regular.ttf")),
+            );
+            fonts.families
+                .entry(egui::FontFamily::Proportional)
+                .or_default()
+                .insert(0, "inter".to_owned());
+        }
+        
         cc.egui_ctx.set_fonts(fonts);
         
         // Load previous state if any
@@ -84,9 +90,17 @@ impl DpfApp {
         
         // Load modules
         let pipeline = Pipeline::load(&db);
-        let generator = ProductGenerator::new(&db);
+        let mut generator = ProductGenerator::new(&db, runtime.clone());
+        
+        // Set API keys from config
+        generator.set_api_keys(
+            config.openai_key.clone(),
+            config.anthropic_key.clone(),
+            config.google_key.clone(),
+        );
+        
         let license_manager = LicenseManager::new(&db);
-        let template_registry = TemplateRegistry::load();
+        let template_registry = TemplateRegistry::new();
         let research = MarketResearch::new(runtime.clone());
         let scheduler = Scheduler::new(&db, runtime.clone());
         
