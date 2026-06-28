@@ -52,11 +52,7 @@ fn show_create(app: &mut DpfApp, ctx: &Context) {
 }
 
 fn show_research(app: &mut DpfApp, ctx: &Context) {
-    CentralPanel::default().show(ctx, |ui| {
-        ui.heading("Market Research");
-        ui.label("Research tools for Etsy, Gumroad, Amazon");
-        // TODO: Implement research UI
-    });
+    super::research_view::show(app, ctx);
 }
 
 fn show_templates(app: &mut DpfApp, ctx: &Context) {
@@ -68,19 +64,11 @@ fn show_templates(app: &mut DpfApp, ctx: &Context) {
 }
 
 fn show_bundles(app: &mut DpfApp, ctx: &Context) {
-    CentralPanel::default().show(ctx, |ui| {
-        ui.heading("Bundles");
-        ui.label("Create and manage product bundles");
-        // TODO: Implement bundle builder
-    });
+    super::bundle_view::show(app, ctx);
 }
 
 fn show_scheduler(app: &mut DpfApp, ctx: &Context) {
-    CentralPanel::default().show(ctx, |ui| {
-        ui.heading("Scheduler");
-        ui.label("Schedule automated tasks");
-        // TODO: Implement scheduler UI
-    });
+    super::scheduler_view::show(app, ctx);
 }
 
 fn show_settings(app: &mut DpfApp, ctx: &Context) {

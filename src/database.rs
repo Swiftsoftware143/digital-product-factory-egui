@@ -221,4 +221,54 @@ impl Database {
             Ok(None)
         }
     }
+    
+    // Scheduled tasks operations
+    pub fn load_scheduled_tasks(&self) -> SqlResult<Vec<crate::scheduler::ScheduledTask>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, name, task_type, schedule, next_run, last_run, status, data, enabled 
+             FROM scheduled_tasks ORDER BY next_run"
+        )?;
+        
+        let tasks = stmt.query_map([], |row| {
+            Ok(crate::scheduler::ScheduledTask {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                task_type: serde_json::from_str(&row.get::<_, String>(2)?).unwrap(),
+                schedule: serde_json::from_str(&row.get::<_, String>(3)?).unwrap(),
+                next_run: row.get::<_, Option<String>>(4)?
+                    .and_then(|s| chrono::DateTime::parse_from_rfc3339(&s).ok())
+                    .map(|d| d.with_timezone(&chrono::Utc)),
+                last_run: row.get::<_, Option<String>>(5)?
+                    .and_then(|s| chrono::DateTime::parse_from_rfc3339(&s).ok())
+                    .map(|d| d.with_timezone(&chrono::Utc)),
+                status: serde_json::from_str(&row.get::<_, String>(6)?).unwrap_or(crate::scheduler::TaskStatus::Pending),
+                data: row.get(7)?,
+                enabled: row.get(8)?,
+            })
+        })?;
+        
+        tasks.collect()
+    }
+    
+    pub fn save_scheduled_task(&self, task: &crate::scheduler::ScheduledTask) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO scheduled_tasks 
+             (id, name, task_type, schedule, next_run, last_run, status, data, enabled)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            params![
+                task.id,
+                task.name,
+                serde_json::to_string(&task.task_type).unwrap(),
+                serde_json::to_string(&task.schedule).unwrap(),
+                task.next_run.map(|d| d.to_rfc3339()),
+                task.last_run.map(|d| d.to_rfc3339()),
+                serde_json::to_string(&task.status).unwrap(),
+                task.data,
+                task.enabled,
+            ],
+        )?;
+        Ok(())
+    }
 }

@@ -11,17 +11,15 @@ egui = "0.24"
 egui_extras = { version = "0.24", features = ["image", "datepicker"] }
 eframe = { version = "0.24", features = ["default", "persistence"] }
 
-# HTTP client for API calls
-reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
-
 # Async runtime
 tokio = { version = "1.35", features = ["full"] }
 
 # Database
 rusqlite = { version = "0.30", features = ["bundled", "chrono"] }
 
-# HTTP client for API calls
-reqwest = { version = "0.11", features = ["json", "rustls-tls"] }
+# Web scraping
+scraper = "0.18"
+urlencoding = "2.1"
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }

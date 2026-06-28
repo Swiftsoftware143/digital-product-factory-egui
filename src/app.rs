@@ -11,6 +11,9 @@ use crate::{
     templates::TemplateRegistry,
     research::MarketResearch,
     scheduler::Scheduler,
+    bundler::Bundler,
+    exporter::Exporter,
+    contract_generator::ContractGenerator,
     database::Database,
     config::AppConfig,
     ui::{sidebar, main_content, status_bar},
@@ -21,7 +24,7 @@ pub struct DpfApp {
     pub db: Arc<Database>,
     pub runtime: Arc<Runtime>,
     pub config: AppConfig,
-    
+
     // Modules
     pub pipeline: Pipeline,
     pub generator: ProductGenerator,
@@ -29,7 +32,10 @@ pub struct DpfApp {
     pub template_registry: TemplateRegistry,
     pub research: MarketResearch,
     pub scheduler: Scheduler,
-    
+    pub bundler: Bundler,
+    pub exporter: Exporter,
+    pub contract_generator: ContractGenerator,
+
     // UI State
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
@@ -37,7 +43,7 @@ pub struct DpfApp {
     pub selected_product: Option<usize>,
     pub show_settings: bool,
     pub show_license_dialog: bool,
-    
+
     // Performance
     pub last_frame_time: std::time::Instant,
     pub fps: f32,
@@ -103,7 +109,10 @@ impl DpfApp {
         let template_registry = TemplateRegistry::new();
         let research = MarketResearch::new(runtime.clone());
         let scheduler = Scheduler::new(&db, runtime.clone());
-        
+        let bundler = Bundler::new();
+        let exporter = Exporter::new();
+        let contract_generator = ContractGenerator::new();
+
         Self {
             db,
             runtime,
@@ -114,6 +123,9 @@ impl DpfApp {
             template_registry,
             research,
             scheduler,
+            bundler,
+            exporter,
+            contract_generator,
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,
             search_query: String::new(),

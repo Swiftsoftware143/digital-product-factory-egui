@@ -9,6 +9,10 @@ pub mod create_view;
 pub mod settings_dialog;
 pub mod license_dialog;
 pub mod components;
+pub mod contract_view;
+pub mod research_view;
+pub mod scheduler_view;
+pub mod bundle_view;
 
 pub use create_view::show as create_view;
 
