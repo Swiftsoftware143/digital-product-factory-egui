@@ -27,6 +27,14 @@ pub enum TemplateCategory {
     Cookbook,
     Business,
     Legal,
+    DigitalStickers,
+    DigitalArt,
+    ClipArt,
+    ColoringPages,
+    LogoDesign,
+    NotionTemplates,
+    Printables,
+    PodDesigns,
     Other,
 }
 
@@ -41,6 +49,14 @@ impl TemplateCategory {
             TemplateCategory::Cookbook => "Cookbook",
             TemplateCategory::Business => "Business",
             TemplateCategory::Legal => "Legal",
+            TemplateCategory::DigitalStickers => "Digital Stickers",
+            TemplateCategory::DigitalArt => "Digital Art",
+            TemplateCategory::ClipArt => "Clip Art",
+            TemplateCategory::ColoringPages => "Coloring Pages",
+            TemplateCategory::LogoDesign => "Logo Design",
+            TemplateCategory::NotionTemplates => "Notion Templates",
+            TemplateCategory::Printables => "Printables",
+            TemplateCategory::PodDesigns => "POD Designs",
             TemplateCategory::Other => "Other",
         }
     }
@@ -55,6 +71,14 @@ impl TemplateCategory {
             TemplateCategory::Cookbook,
             TemplateCategory::Business,
             TemplateCategory::Legal,
+            TemplateCategory::DigitalStickers,
+            TemplateCategory::DigitalArt,
+            TemplateCategory::ClipArt,
+            TemplateCategory::ColoringPages,
+            TemplateCategory::LogoDesign,
+            TemplateCategory::NotionTemplates,
+            TemplateCategory::Printables,
+            TemplateCategory::PodDesigns,
         ]
     }
 }
@@ -300,6 +324,431 @@ Include standard clauses for intellectual property, termination, and dispute res
                 ],
             },
         ];
+        
+        // Add new digital product templates from user's research
+        templates.extend(vec![
+            // Digital Stickers
+            Template {
+                id: "digital_stickers_pack".to_string(),
+                name: "Digital Stickers Pack".to_string(),
+                description: "Sticker packs for OneNote, GoodNotes, and other apps. $8.73/pack with 91% profit margin. ~625 sales/mo potential.".to_string(),
+                category: TemplateCategory::DigitalStickers,
+                tags: vec!["stickers".to_string(), "goodnotes".to_string(), "onenote".to_string(), "high-margin".to_string()],
+                trending_score: 95,
+                seasonal_peak: Some("september".to_string()),
+                prompt_template: "Create digital stickers with theme: {theme}
+
+Style: {style}
+Format: PNG with transparent background
+Size: Optimized for tablet apps (OneNote, GoodNotes)
+
+AI Prompt for Midjourney 5:
+'{theme} stickers, cute kawaii style, isolated on white background, clean vector art, vibrant colors --ar 1:1 --v 5'
+
+Pack includes:
+- 20-30 individual stickers
+- Pre-cropped PNG files
+- GoodNotes/OneNote optimized
+- Commercial license included
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "theme".to_string(),
+                        description: "Sticker theme".to_string(),
+                        param_type: ParameterType::Select(vec!["Cute Animals".to_string(), "Plants & Nature".to_string(), "Food & Drinks".to_string(), "Planner Icons".to_string(), "Motivational Quotes".to_string(), "Seasonal".to_string()]),
+                        required: true,
+                        default: Some("Cute Animals".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "style".to_string(),
+                        description: "Art style".to_string(),
+                        param_type: ParameterType::Select(vec!["Kawaii".to_string(), "Watercolor".to_string(), "Flat Vector".to_string(), "Hand-drawn".to_string()]),
+                        required: true,
+                        default: Some("Kawaii".to_string()),
+                    },
+                ],
+            },
+            // Digital Art
+            Template {
+                id: "digital_art_printable".to_string(),
+                name: "Digital Art Printables".to_string(),
+                description: "AI-generated art resized for printable downloads. ~$3/download, 1,667 sales/mo potential.".to_string(),
+                category: TemplateCategory::DigitalArt,
+                tags: vec!["art".to_string(), "printable".to_string(), "wall-art".to_string(), "ai-generated".to_string()],
+                trending_score: 90,
+                seasonal_peak: None,
+                prompt_template: "Generate digital art for printable downloads.
+
+Theme: {theme}
+Style: {art_style}
+
+AI Prompt:
+'{theme} in {art_style} style, high quality, detailed, suitable for printing --ar {aspect_ratio}'
+
+Aspect Ratios for Products:
+- Mug: --ar 293:151
+- Standard print: --ar 3:4
+- Landscape: --ar 16:9
+- Square: --ar 1:1
+
+Deliverables:
+- High-res JPG (300 DPI)
+- Multiple sizes included
+- Print-ready files
+- Commercial license
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "theme".to_string(),
+                        description: "Art theme".to_string(),
+                        param_type: ParameterType::Select(vec!["Abstract".to_string(), "Nature".to_string(), "Botanical".to_string(), "Geometric".to_string(), "Landscape".to_string(), "Minimalist".to_string()]),
+                        required: true,
+                        default: Some("Botanical".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "art_style".to_string(),
+                        description: "Art style".to_string(),
+                        param_type: ParameterType::Select(vec!["Watercolor".to_string(), "Oil Painting".to_string(), "Digital Art".to_string(), "Line Art".to_string(), "Photography".to_string()]),
+                        required: true,
+                        default: Some("Watercolor".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "aspect_ratio".to_string(),
+                        description: "Target aspect ratio".to_string(),
+                        param_type: ParameterType::Select(vec!["293:151 (Mug)".to_string(), "3:4 (Standard Print)".to_string(), "16:9 (Landscape)".to_string(), "1:1 (Square)".to_string()]),
+                        required: true,
+                        default: Some("3:4 (Standard Print)".to_string()),
+                    },
+                ],
+            },
+            // Clip Art
+            Template {
+                id: "clip_art_bundle".to_string(),
+                name: "Clip Art Bundle".to_string(),
+                description: "Pre-made graphics for documents, presentations, and products. High demand on Etsy.".to_string(),
+                category: TemplateCategory::ClipArt,
+                tags: vec!["clipart".to_string(), "graphics".to_string(), "presentation".to_string(), "commercial-use".to_string()],
+                trending_score: 88,
+                seasonal_peak: None,
+                prompt_template: "Create clip art graphics bundle.
+
+Category: {category}
+Style: {style}
+
+AI Prompt:
+'{category} clip art set, {style}, isolated on transparent background, clean edges, professional quality --ar 1:1'
+
+Bundle includes:
+- 50+ individual graphics
+- PNG with transparency
+- SVG vector files
+- Commercial license
+- Organized by category
+
+Use for:
+- Presentations
+- Documents
+- Product designs
+- Social media
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "category".to_string(),
+                        description: "Clip art category".to_string(),
+                        param_type: ParameterType::Select(vec!["Business Icons".to_string(), "Floral Elements".to_string(), "Seasonal Decorations".to_string(), "Food & Kitchen".to_string(), "Arrows & Symbols".to_string(), "People & Characters".to_string()]),
+                        required: true,
+                        default: Some("Business Icons".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "style".to_string(),
+                        description: "Visual style".to_string(),
+                        param_type: ParameterType::Select(vec!["Flat Design".to_string(), "3D Render".to_string(), "Hand-drawn".to_string(), "Watercolor".to_string(), "Line Art".to_string()]),
+                        required: true,
+                        default: Some("Flat Design".to_string()),
+                    },
+                ],
+            },
+            // Coloring Pages
+            Template {
+                id: "coloring_pages_book".to_string(),
+                name: "Adult Coloring Pages".to_string(),
+                description: "Intricate coloring pages for adults. Mandalas, animals, landscapes. High seller on Etsy.".to_string(),
+                category: TemplateCategory::ColoringPages,
+                tags: vec!["coloring".to_string(), "adult-coloring".to_string(), "mandalas".to_string(), "stress-relief".to_string()],
+                trending_score: 92,
+                seasonal_peak: Some("december".to_string()),
+                prompt_template: "Create intricate adult coloring pages.
+
+Type: {page_type}
+Complexity: {complexity}
+
+AI Prompt for DALL-E/Artistly:
+'Intricate {page_type} coloring page for adults, black and white line art, high detail, no shading, clean lines, printable quality'
+
+Or use MarketingBlocks/Synthesys for vector output.
+
+Book includes:
+- 30-50 unique designs
+- Single-sided pages
+- 8.5x11 inch format
+- PDF for easy printing
+- Cover design included
+
+Popular themes:
+- Intricate mandalas
+- Detailed animals
+- Fantasy landscapes
+- Geometric patterns
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "page_type".to_string(),
+                        description: "Coloring page type".to_string(),
+                        param_type: ParameterType::Select(vec!["Mandalas".to_string(), "Animals".to_string(), "Landscapes".to_string(), "Floral".to_string(), "Fantasy".to_string(), "Geometric".to_string()]),
+                        required: true,
+                        default: Some("Mandalas".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "complexity".to_string(),
+                        description: "Detail level".to_string(),
+                        param_type: ParameterType::Select(vec!["Simple".to_string(), "Moderate".to_string(), "Intricate".to_string(), "Expert".to_string()]),
+                        required: true,
+                        default: Some("Intricate".to_string()),
+                    },
+                ],
+            },
+            // Logo Design
+            Template {
+                id: "logo_design_template".to_string(),
+                name: "Logo Design Pack".to_string(),
+                description: "Simple logos for small businesses. $10 each, 500 sales/mo potential.".to_string(),
+                category: TemplateCategory::LogoDesign,
+                tags: vec!["logo".to_string(), "branding".to_string(), "business".to_string(), "minimal".to_string()],
+                trending_score: 87,
+                seasonal_peak: Some("january".to_string()),
+                prompt_template: "Create professional logo designs.
+
+Business Type: {business_type}
+Style: {logo_style}
+
+AI Tools: DesignBeast, Logoai, Looka, Artistly
+
+Prompt for AI:
+'{business_type} logo, {logo_style}, professional, minimalist, vector style, clean typography, memorable icon --ar 1:1'
+
+Pack includes:
+- 3 logo variations
+- Color + B&W versions
+- Horizontal & vertical layouts
+- Source files (if applicable)
+- Usage guidelines
+
+Target: Small businesses, startups, side hustles
+Price point: $10-25 per logo
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "business_type".to_string(),
+                        description: "Target business type".to_string(),
+                        param_type: ParameterType::Select(vec!["Coffee Shop".to_string(), "Tech Startup".to_string(), "Boutique".to_string(), "Consulting".to_string(), "Fitness".to_string(), "Creative Agency".to_string()]),
+                        required: true,
+                        default: Some("Coffee Shop".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "logo_style".to_string(),
+                        description: "Logo style".to_string(),
+                        param_type: ParameterType::Select(vec!["Minimalist".to_string(), "Vintage".to_string(), "Modern".to_string(), "Playful".to_string(), "Luxury".to_string()]),
+                        required: true,
+                        default: Some("Minimalist".to_string()),
+                    },
+                ],
+            },
+            // Notion Templates
+            Template {
+                id: "notion_template".to_string(),
+                name: "Notion Template".to_string(),
+                description: "Productivity templates for Notion. High demand from students and professionals.".to_string(),
+                category: TemplateCategory::NotionTemplates,
+                tags: vec!["notion".to_string(), "productivity".to_string(), "template".to_string(), "organization".to_string()],
+                trending_score: 94,
+                seasonal_peak: Some("september".to_string()),
+                prompt_template: "Create a Notion template.
+
+Template Type: {template_type}
+Target User: {target_user}
+
+Structure includes:
+- Dashboard with overview
+- Organized databases
+- Pre-built views (table, board, calendar)
+- Instruction page
+- Template duplication link
+
+Popular templates:
+- Second brain / PKM
+- Project management
+- Habit tracker
+- Content calendar
+- Budget tracker
+- Student planner
+
+Use AI to generate:
+- Icon designs (Midjourney)
+- Cover images
+- Content suggestions
+
+Price range: $5-25
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Markdown,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "template_type".to_string(),
+                        description: "Template purpose".to_string(),
+                        param_type: ParameterType::Select(vec!["Second Brain".to_string(), "Project Management".to_string(), "Habit Tracker".to_string(), "Content Calendar".to_string(), "Budget Tracker".to_string(), "Student Planner".to_string()]),
+                        required: true,
+                        default: Some("Second Brain".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "target_user".to_string(),
+                        description: "Target audience".to_string(),
+                        param_type: ParameterType::Select(vec!["Students".to_string(), "Professionals".to_string(), "Creators".to_string(), "Small Business".to_string(), "Freelancers".to_string()]),
+                        required: true,
+                        default: Some("Professionals".to_string()),
+                    },
+                ],
+            },
+            // Printables
+            Template {
+                id: "printables_pack".to_string(),
+                name: "Printables & Planners".to_string(),
+                description: "Printable planners, trackers, and organizers. $2.50-$9 range, 1,250 sales/mo potential.".to_string(),
+                category: TemplateCategory::Printables,
+                tags: vec!["printables".to_string(), "planner".to_string(), "tracker".to_string(), "organization".to_string()],
+                trending_score: 91,
+                seasonal_peak: Some("january".to_string()),
+                prompt_template: "Create printable planners and organizers.
+
+Type: {printable_type}
+Format: {format}
+
+Design in Canva or use AI Printable Automation
+
+Pack includes:
+- Multiple page layouts
+- Cover page
+- Instructions for printing
+- PDF optimized for home printing
+- US Letter & A4 sizes
+
+Popular printables:
+- Daily/weekly planners
+- Budget trackers
+- Habit trackers
+- Meal planners
+- Goal setting worksheets
+- Real estate marketing materials
+- Resume templates
+
+Price: $2.50-$9 per pack
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "printable_type".to_string(),
+                        description: "Type of printable".to_string(),
+                        param_type: ParameterType::Select(vec!["Daily Planner".to_string(), "Budget Tracker".to_string(), "Habit Tracker".to_string(), "Meal Planner".to_string(), "Goal Worksheet".to_string(), "Resume Template".to_string()]),
+                        required: true,
+                        default: Some("Daily Planner".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "format".to_string(),
+                        description: "File format".to_string(),
+                        param_type: ParameterType::Select(vec!["PDF (Printable)".to_string(), "Google Docs".to_string(), "Microsoft Word".to_string(), "Canva Template".to_string()]),
+                        required: true,
+                        default: Some("PDF (Printable)".to_string()),
+                    },
+                ],
+            },
+            // POD Designs
+            Template {
+                id: "pod_design_pack".to_string(),
+                name: "Print-on-Demand Designs".to_string(),
+                description: "AI designs for mugs, shirts, hoodies. $15 avg sale, 42% profit margin, 334 sales/mo.".to_string(),
+                category: TemplateCategory::PodDesigns,
+                tags: vec!["pod".to_string(), "print-on-demand".to_string(), "mug-designs".to_string(), "tshirt-designs".to_string()],
+                trending_score: 89,
+                seasonal_peak: None,
+                prompt_template: "Create print-on-demand designs.
+
+Product: {product_type}
+Theme: {theme}
+
+AI Prompt for Midjourney:
+'{theme} design, {style}, sharp focus, on pure white background, print-ready, high quality --ar {aspect_ratio}'
+
+Aspect Ratios:
+- Mug: --ar 293:151
+- T-shirt: --ar 1:1
+- All-over hoodie: --tile
+
+Add funny puns with ChatGPT (trademark-free):
+- Generate 10 puns about {theme}
+- Check on USPTO.gov
+- Pair with matching images
+
+Pro tip: Find best-selling digital downloads on Etsy, mock up on POD products with Photoshop smart objects
+
+Tools:
+- Subliminator for all-over print hoodies
+- Printful/Printify for standard products
+- Photoshop for enhancement
+
+Time investment: 1 day per month".to_string(),
+                output_format: OutputFormat::Pdf,
+                parameters: vec![
+                    TemplateParameter {
+                        name: "product_type".to_string(),
+                        description: "POD product".to_string(),
+                        param_type: ParameterType::Select(vec!["Mug".to_string(), "T-Shirt".to_string(), "Hoodie".to_string(), "Phone Case".to_string(), "Tote Bag".to_string()]),
+                        required: true,
+                        default: Some("Mug".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "theme".to_string(),
+                        description: "Design theme".to_string(),
+                        param_type: ParameterType::Select(vec!["Funny Quotes".to_string(), "Nature".to_string(), "Animals".to_string(), "Hobbies".to_string(), "Professions".to_string(), "Seasonal".to_string()]),
+                        required: true,
+                        default: Some("Funny Quotes".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "style".to_string(),
+                        description: "Art style".to_string(),
+                        param_type: ParameterType::Select(vec!["Watercolor".to_string(), "Retro/Vintage".to_string(), "Minimalist".to_string(), "Bold Typography".to_string(), "Illustration".to_string()]),
+                        required: true,
+                        default: Some("Watercolor".to_string()),
+                    },
+                    TemplateParameter {
+                        name: "aspect_ratio".to_string(),
+                        description: "Image aspect ratio".to_string(),
+                        param_type: ParameterType::Select(vec!["293:151 (Mug)".to_string(), "1:1 (Square)".to_string(), "4:5 (Portrait)".to_string(), "Tile Pattern".to_string()]),
+                        required: true,
+                        default: Some("293:151 (Mug)".to_string()),
+                    },
+                ],
+            },
+        ]);
         
         for template in templates {
             self.templates.insert(template.id.clone(), template);
