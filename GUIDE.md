@@ -2,16 +2,17 @@
 
 ## Table of Contents
 1. [Getting Started](#getting-started)
-2. [The Pipeline](#the-pipeline)
-3. [Creating Products](#creating-products)
-4. [Market Research](#market-research)
-5. [Contract Generator](#contract-generator)
-6. [Bundles](#bundles)
-7. [Scheduler](#scheduler)
-8. [Exporting](#exporting)
-9. [Settings](#settings)
-10. [License Management](#license-management)
-11. [Workflow Examples](#workflow-examples)
+2. [Industry Presets](#industry-presets)
+3. [The Pipeline](#the-pipeline)
+4. [Creating Products](#creating-products)
+5. [Market Research](#market-research)
+6. [Contract Generator](#contract-generator)
+7. [Bundles](#bundles)
+8. [Scheduler](#scheduler)
+9. [Exporting](#exporting)
+10. [Settings](#settings)
+11. [License Management](#license-management)
+12. [Workflow Examples](#workflow-examples)
 
 ---
 
@@ -42,6 +43,43 @@ On first launch, you'll see:
    - Google API key (for Gemini)
 3. Configure preferences (auto-save, dark mode)
 4. Click **Save**
+
+---
+
+## Industry Presets
+
+Industry Presets are pre-configured workflows designed for specific business models. Each preset includes a complete pipeline with recommended actions, modules, and tips tailored to that industry.
+
+### Available Presets
+
+| Preset | Best For | Stages |
+|--------|----------|--------|
+| **Affiliate Marketing** | Product reviewers, email marketers | Research → Ideation → Create → Legal → Bundle → Schedule → Publish → Analyze |
+| **Content Creator** | YouTubers, influencers, podcasters | Ideation → Sponsor Deals → Production → Legal → Assets → Schedule → Export → Archive |
+| **Creator + Affiliate Hybrid** | Multi-monetization creators | Combined workflow for brand deals + affiliate revenue |
+| **E-Learning** | Course creators, coaches | Curriculum → Content → Legal → Bundle → Schedule → Export |
+| **SaaS** | Software founders, app developers | Roadmap → Development → Legal → Beta → Launch → Export |
+| **Marketing Agency** | Agencies, consultants | Prospect → Onboard → Strategy → Execute → Optimize → Report |
+| **Freelancer** | Developers, designers, writers | Lead → Proposal → Contract → Work → Review → Deliver |
+| **Info Products** | Template sellers, ebook authors | Research → Outline → Create → Design → Legal → Bundle → Export → Launch |
+| **Business Setup** | New sellers, side hustlers | Complete 12-step workflow from research to launch |
+
+### Using Presets
+
+1. Go to **🎯 Presets** tab in the sidebar
+2. Browse preset cards with descriptions
+3. Click **View Details** to see full workflow
+4. Click **Load Pipeline** to create sample ideas for each stage
+5. Customize the generated ideas for your needs
+
+### Preset Features
+
+Each preset includes:
+- **Stage breakdown**: What to do at each step
+- **Recommended modules**: Which Factory features to use
+- **Action checklists**: Specific tasks to complete
+- **Output descriptions**: What you should have after each stage
+- **Quick tips**: Industry-specific advice
 
 ---
 
@@ -125,12 +163,44 @@ The Dashboard shows:
 
 ### Built-in Templates
 
+#### Classic Templates
+
 | Template | Best For | Output |
 |----------|----------|--------|
 | **Daily Planner** | Productivity enthusiasts | PDF |
 | **Gratitude Journal** | Wellness market | PDF |
 | **Budget Tracker** | Finance niche | XLSX |
 | **Freelance Contract** | Service providers | DOCX |
+
+#### Digital Product Templates
+
+| Template | Category | Description |
+|----------|----------|-------------|
+| **Digital Stickers Pack** | Digital Stickers | Sticker packs for OneNote, GoodNotes, and note-taking apps |
+| **Digital Art Printables** | Digital Art | AI-generated art for wall art and home decor |
+| **Clip Art Bundle** | Clip Art | Pre-made graphics for presentations and documents |
+| **Adult Coloring Pages** | Coloring Pages | Intricate mandalas, animals, landscapes for coloring books |
+| **Logo Design Pack** | Logo Design | Professional logos for small businesses and startups |
+| **Notion Template** | Notion Templates | Productivity templates for students and professionals |
+| **Printables & Planners** | Printables | Printable planners, trackers, and organizers |
+| **Print-on-Demand Designs** | POD Designs | AI designs for mugs, shirts, hoodies, and POD products |
+
+### Template Categories
+
+Templates are organized by category:
+- **Planners**: Daily, weekly, monthly planners
+- **Journals**: Gratitude, fitness, travel journals
+- **Spreadsheets**: Budget trackers, calculators
+- **Guides**: How-to guides, workbooks
+- **Legal**: Contracts, agreements
+- **Digital Stickers**: For note-taking apps
+- **Digital Art**: Printable wall art
+- **Clip Art**: Graphics for documents
+- **Coloring Pages**: Adult coloring books
+- **Logo Design**: Business branding
+- **Notion Templates**: Productivity systems
+- **Printables**: Planners and trackers
+- **POD Designs**: Print-on-demand graphics
 
 ### Configuring Parameters
 
@@ -167,6 +237,16 @@ The system automatically selects the best AI model:
 | Structured data | Claude 3.5 | Anthropic |
 | Technical content | Gemini 1.5 | Google |
 | Quick tasks | GPT-3.5 | OpenAI |
+
+### AI Prompt Templates
+
+Each template includes optimized AI prompts with:
+- **Aspect ratio presets**: `--ar 293:151` for mugs, `--ar 1:1` for stickers, etc.
+- **Style modifiers**: Watercolor, minimalist, vintage, etc.
+- **Output specifications**: Format, resolution, use case
+- **Time estimates**: Most products take ~1 day/month to maintain
+
+Example prompts are shown in the template details and can be copied for use with your preferred AI image generator.
 
 ---
 
@@ -626,8 +706,31 @@ Deactivate old devices to free up slots.
 6. **Iterate**: Move products back to "Creating" for improvements
 7. **Stay legal**: Always use contract generator for client work
 8. **Backup regularly**: Enable scheduled backups
+9. **Use Industry Presets**: Start with a preset that matches your business model
+10. **Focus first**: Perfect one product before expanding (per Business Setup preset)
+11. **Create handcrafted-looking images**: Good shops have authentic, non-stock visuals
+12. **Test multiple platforms**: Different platforms attract different buyer types
 
 ---
 
-*Version 1.0.0 - Native Rust Edition*
+*Version 1.1.0 - Native Rust Edition*
 *Last Updated: June 2026*
+
+## Changelog
+
+### v1.1.0
+- Added **Industry Presets** with 9 pre-configured workflows
+- Added **8 new digital product templates** (stickers, art, clip art, coloring pages, logos, Notion templates, printables, POD designs)
+- Removed external tool references - Digital Product Factory is now the complete solution
+- Updated Business Setup preset with 12-step workflow
+- Removed hardcoded pricing from templates (users set their own prices)
+
+### v1.0.0
+- Initial release
+- Pipeline kanban workflow
+- AI product generation (OpenAI, Anthropic, Google)
+- Market research
+- Contract generator
+- Scheduler
+- Bundle builder
+- Export (PDF, DOCX, XLSX, ZIP)
