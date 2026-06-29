@@ -100,6 +100,7 @@ impl PresetRegistry {
             Self::marketing_agency_preset(),
             Self::freelancer_preset(),
             Self::info_products_preset(),
+            Self::business_setup_preset(),
         ];
         
         for preset in presets {
@@ -970,6 +971,184 @@ impl PresetRegistry {
                 "Preview samples drive 3x more conversions".to_string(),
                 "Bundle related products for higher average order value".to_string(),
                 "Update products annually to stay relevant".to_string(),
+            ],
+        }
+    }
+    
+    /// Complete Business Setup Preset (12-Step Workflow)
+    fn business_setup_preset() -> IndustryPreset {
+        IndustryPreset {
+            id: "business_setup".to_string(),
+            name: "Complete Business Setup".to_string(),
+            emoji: "🏪".to_string(),
+            description: "12-step workflow from research to launch. Based on proven Etsy/POD success patterns.".to_string(),
+            best_for: vec![
+                "New Etsy sellers".to_string(),
+                "POD entrepreneurs".to_string(),
+                "Digital product beginners".to_string(),
+                "Side hustle starters".to_string(),
+            ],
+            stages: vec![
+                PresetStage {
+                    name: "Research".to_string(),
+                    emoji: "🔍".to_string(),
+                    description: "Research products and competitors".to_string(),
+                    recommended_modules: vec![ModuleType::MarketResearch, ModuleType::Notes],
+                    actions: vec![
+                        "Use eRank.com for Etsy research".to_string(),
+                        "Install Alura Chrome extension for sales data".to_string(),
+                        "Analyze top competitors".to_string(),
+                        "Validate demand and pricing".to_string(),
+                    ],
+                    output_description: "Market validation, competitor analysis, product ideas".to_string(),
+                },
+                PresetStage {
+                    name: "Branding".to_string(),
+                    emoji: "🎨".to_string(),
+                    description: "Shop name and logo".to_string(),
+                    recommended_modules: vec![ModuleType::AiGeneration],
+                    actions: vec![
+                        "Use ChatGPT to brainstorm shop names".to_string(),
+                        "Generate logo with Artistly".to_string(),
+                        "Create variations with DesignBeast".to_string(),
+                        "Check name availability".to_string(),
+                    ],
+                    output_description: "Shop name, logo files, brand identity".to_string(),
+                },
+                PresetStage {
+                    name: "Accounts".to_string(),
+                    emoji: "📧".to_string(),
+                    description: "Create Gmail and platform accounts".to_string(),
+                    recommended_modules: vec![ModuleType::Notes],
+                    actions: vec![
+                        "Create dedicated Gmail account".to_string(),
+                        "Register Etsy seller account".to_string(),
+                        "Set up eBay store (optional)".to_string(),
+                        "Create Gumroad account".to_string(),
+                    ],
+                    output_description: "Active seller accounts on all platforms".to_string(),
+                },
+                PresetStage {
+                    name: "Storefront".to_string(),
+                    emoji: "🏪".to_string(),
+                    description: "Build shop presence".to_string(),
+                    recommended_modules: vec![ModuleType::AiGeneration, ModuleType::BundleBuilder],
+                    actions: vec![
+                        "Create banner images".to_string(),
+                        "Write shop description".to_string(),
+                        "Set up shop policies".to_string(),
+                        "Install Sale Samurai for SEO".to_string(),
+                    ],
+                    output_description: "Complete storefront with SEO optimization".to_string(),
+                },
+                PresetStage {
+                    name: "Product Focus".to_string(),
+                    emoji: "🎯".to_string(),
+                    description: "Focus on one product/design".to_string(),
+                    recommended_modules: vec![ModuleType::AiGeneration, ModuleType::Pipeline],
+                    actions: vec![
+                        "Choose your first product type".to_string(),
+                        "Create 5-10 initial designs".to_string(),
+                        "Perfect one before expanding".to_string(),
+                    ],
+                    output_description: "First product line ready for listing".to_string(),
+                },
+                PresetStage {
+                    name: "Marketing Assets".to_string(),
+                    emoji: "📢".to_string(),
+                    description: "Banners and social posts".to_string(),
+                    recommended_modules: vec![ModuleType::AiGeneration, ModuleType::ExportPdf],
+                    actions: vec![
+                        "Create incentive banners".to_string(),
+                        "Design social media templates".to_string(),
+                        "Make promotional graphics".to_string(),
+                    ],
+                    output_description: "Marketing asset library".to_string(),
+                },
+                PresetStage {
+                    name: "Automation".to_string(),
+                    emoji: "⚙️".to_string(),
+                    description: "Connect automation tools".to_string(),
+                    recommended_modules: vec![ModuleType::Notes],
+                    actions: vec![
+                        "Connect Slingly for multi-platform".to_string(),
+                        "Set up Wholesale Robot".to_string(),
+                        "Configure Printful/TeeLaunch".to_string(),
+                        "Setup AutomatePOD".to_string(),
+                    ],
+                    output_description: "Automated fulfillment pipeline".to_string(),
+                },
+                PresetStage {
+                    name: "Social Media".to_string(),
+                    emoji: "📱".to_string(),
+                    description: "Create social presence".to_string(),
+                    recommended_modules: vec![ModuleType::Scheduler, ModuleType::AiGeneration],
+                    actions: vec![
+                        "Create Instagram/TikTok accounts".to_string(),
+                        "Set up Pinterest business".to_string(),
+                        "Plan content calendar".to_string(),
+                        "Create video about incentives".to_string(),
+                    ],
+                    output_description: "Active social media presence".to_string(),
+                },
+                PresetStage {
+                    name: "Email System".to_string(),
+                    emoji: "📧".to_string(),
+                    description: "Backend and email list".to_string(),
+                    recommended_modules: vec![ModuleType::ContractGenerator, ModuleType::Notes],
+                    actions: vec![
+                        "Set up Sendiio for email".to_string(),
+                        "Configure NewOak AI".to_string(),
+                        "Create lead magnets".to_string(),
+                        "Build signup forms".to_string(),
+                    ],
+                    output_description: "Email marketing system ready".to_string(),
+                },
+                PresetStage {
+                    name: "Partnerships".to_string(),
+                    emoji: "🤝".to_string(),
+                    description: "Marketing and distribution".to_string(),
+                    recommended_modules: vec![ModuleType::ContractGenerator],
+                    actions: vec![
+                        "Draft marketing contracts".to_string(),
+                        "Create distribution agreements".to_string(),
+                        "Set up BVPP partnership".to_string(),
+                    ],
+                    output_description: "Signed partnership contracts".to_string(),
+                },
+                PresetStage {
+                    name: "Website".to_string(),
+                    emoji: "🌐".to_string(),
+                    description: "Create own website".to_string(),
+                    recommended_modules: vec![ModuleType::AiGeneration, ModuleType::ExportPdf],
+                    actions: vec![
+                        "Build website (Shopify/Carrd)".to_string(),
+                        "Add product listings".to_string(),
+                        "Set up payment processing".to_string(),
+                        "Connect custom domain".to_string(),
+                    ],
+                    output_description: "Live website with store".to_string(),
+                },
+                PresetStage {
+                    name: "Testing".to_string(),
+                    emoji: "🧪".to_string(),
+                    description: "User testing and feedback".to_string(),
+                    recommended_modules: vec![ModuleType::Notes],
+                    actions: vec![
+                        "Hire testers on usertesting.com".to_string(),
+                        "Get screen recordings".to_string(),
+                        "Collect feedback".to_string(),
+                        "Iterate based on results".to_string(),
+                    ],
+                    output_description: "Tested and optimized store".to_string(),
+                },
+            ],
+            quick_tips: vec![
+                "Thomas Frank made $1M in 2 years selling Notion templates on Gumroad".to_string(),
+                "Good Etsy shops have handcrafted-looking images".to_string(),
+                "eBay shoppers care less about presentation - list there too".to_string(),
+                "Focus on ONE product before expanding".to_string(),
+                "Sale Samurai fixes your Etsy SEO automatically".to_string(),
             ],
         }
     }
