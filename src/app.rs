@@ -16,6 +16,7 @@ use crate::{
     contract_generator::ContractGenerator,
     database::Database,
     config::AppConfig,
+    presets::PresetRegistry,
     ui::{sidebar, main_content, status_bar},
 };
 
@@ -35,6 +36,7 @@ pub struct DpfApp {
     pub bundler: Bundler,
     pub exporter: Exporter,
     pub contract_generator: ContractGenerator,
+    pub preset_registry: PresetRegistry,
 
     // UI State
     pub current_tab: Tab,
@@ -43,6 +45,10 @@ pub struct DpfApp {
     pub selected_product: Option<usize>,
     pub show_settings: bool,
     pub show_license_dialog: bool,
+    
+    // Preset State
+    pub selected_preset_id: Option<String>,
+    pub loaded_preset_id: Option<String>,
 
     // Performance
     pub last_frame_time: std::time::Instant,
@@ -58,6 +64,7 @@ pub enum Tab {
     Templates,
     Bundles,
     Scheduler,
+    Presets,
     Settings,
 }
 
@@ -112,6 +119,7 @@ impl DpfApp {
         let bundler = Bundler::new();
         let exporter = Exporter::new();
         let contract_generator = ContractGenerator::new();
+        let preset_registry = PresetRegistry::new();
 
         Self {
             db,
@@ -126,12 +134,15 @@ impl DpfApp {
             bundler,
             exporter,
             contract_generator,
+            preset_registry,
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,
             search_query: String::new(),
             selected_product: None,
             show_settings: false,
             show_license_dialog: false,
+            selected_preset_id: None,
+            loaded_preset_id: None,
             last_frame_time: std::time::Instant::now(),
             fps: 0.0,
         }

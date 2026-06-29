@@ -14,6 +14,7 @@ mod exporter;
 mod contract_generator;
 mod database;
 mod config;
+mod presets;
 mod ui;
 
 use eframe::NativeOptions;

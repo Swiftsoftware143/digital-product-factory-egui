@@ -26,6 +26,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 nav_button(app, ui, Tab::Templates, "📋", "Templates");
                 nav_button(app, ui, Tab::Bundles, "📦", "Bundles");
                 nav_button(app, ui, Tab::Scheduler, "⏰", "Scheduler");
+                nav_button(app, ui, Tab::Presets, "🎯", "Presets");
                 
                 ui.separator();
                 

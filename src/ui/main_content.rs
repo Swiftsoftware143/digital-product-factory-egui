@@ -13,6 +13,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         Tab::Templates => show_templates(app, ctx),
         Tab::Bundles => show_bundles(app, ctx),
         Tab::Scheduler => show_scheduler(app, ctx),
+        Tab::Presets => super::presets_view::show(app, ctx),
         Tab::Settings => show_settings(app, ctx),
     }
 }

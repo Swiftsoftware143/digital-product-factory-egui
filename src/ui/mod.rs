@@ -13,6 +13,7 @@ pub mod contract_view;
 pub mod research_view;
 pub mod scheduler_view;
 pub mod bundle_view;
+pub mod presets_view;
 
 pub use create_view::show as create_view;
 
