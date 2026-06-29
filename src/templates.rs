@@ -331,7 +331,7 @@ Include standard clauses for intellectual property, termination, and dispute res
             Template {
                 id: "digital_stickers_pack".to_string(),
                 name: "Digital Stickers Pack".to_string(),
-                description: "Sticker packs for OneNote, GoodNotes, and other apps. $8.73/pack with 91% profit margin. ~625 sales/mo potential.".to_string(),
+                description: "Sticker packs for OneNote, GoodNotes, and other note-taking apps. High-margin digital product.".to_string(),
                 category: TemplateCategory::DigitalStickers,
                 tags: vec!["stickers".to_string(), "goodnotes".to_string(), "onenote".to_string(), "high-margin".to_string()],
                 trending_score: 95,
@@ -374,7 +374,7 @@ Time investment: 1 day per month".to_string(),
             Template {
                 id: "digital_art_printable".to_string(),
                 name: "Digital Art Printables".to_string(),
-                description: "AI-generated art resized for printable downloads. ~$3/download, 1,667 sales/mo potential.".to_string(),
+                description: "AI-generated art resized for printable downloads. Popular for wall art and home decor.".to_string(),
                 category: TemplateCategory::DigitalArt,
                 tags: vec!["art".to_string(), "printable".to_string(), "wall-art".to_string(), "ai-generated".to_string()],
                 trending_score: 90,
@@ -529,7 +529,7 @@ Time investment: 1 day per month".to_string(),
             Template {
                 id: "logo_design_template".to_string(),
                 name: "Logo Design Pack".to_string(),
-                description: "Simple logos for small businesses. $10 each, 500 sales/mo potential.".to_string(),
+                description: "Simple logos for small businesses, startups, and side hustles.".to_string(),
                 category: TemplateCategory::LogoDesign,
                 tags: vec!["logo".to_string(), "branding".to_string(), "business".to_string(), "minimal".to_string()],
                 trending_score: 87,
@@ -552,7 +552,6 @@ Pack includes:
 - Usage guidelines
 
 Target: Small businesses, startups, side hustles
-Price point: $10-25 per logo
 
 Time investment: 1 day per month".to_string(),
                 output_format: OutputFormat::Pdf,
@@ -607,8 +606,6 @@ Use AI to generate:
 - Cover images
 - Content suggestions
 
-Price range: $5-25
-
 Time investment: 1 day per month".to_string(),
                 output_format: OutputFormat::Markdown,
                 parameters: vec![
@@ -632,7 +629,7 @@ Time investment: 1 day per month".to_string(),
             Template {
                 id: "printables_pack".to_string(),
                 name: "Printables & Planners".to_string(),
-                description: "Printable planners, trackers, and organizers. $2.50-$9 range, 1,250 sales/mo potential.".to_string(),
+                description: "Printable planners, trackers, and organizers for productivity and organization.".to_string(),
                 category: TemplateCategory::Printables,
                 tags: vec!["printables".to_string(), "planner".to_string(), "tracker".to_string(), "organization".to_string()],
                 trending_score: 91,
@@ -660,8 +657,6 @@ Popular printables:
 - Real estate marketing materials
 - Resume templates
 
-Price: $2.50-$9 per pack
-
 Time investment: 1 day per month".to_string(),
                 output_format: OutputFormat::Pdf,
                 parameters: vec![
@@ -685,7 +680,7 @@ Time investment: 1 day per month".to_string(),
             Template {
                 id: "pod_design_pack".to_string(),
                 name: "Print-on-Demand Designs".to_string(),
-                description: "AI designs for mugs, shirts, hoodies. $15 avg sale, 42% profit margin, 334 sales/mo.".to_string(),
+                description: "AI designs for mugs, shirts, hoodies, and other print-on-demand products.".to_string(),
                 category: TemplateCategory::PodDesigns,
                 tags: vec!["pod".to_string(), "print-on-demand".to_string(), "mug-designs".to_string(), "tshirt-designs".to_string()],
                 trending_score: 89,
