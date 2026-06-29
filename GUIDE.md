@@ -50,6 +50,216 @@ On first launch, you'll see:
 
 Industry Presets are pre-configured workflows designed for specific business models. Each preset includes a complete pipeline with recommended actions, modules, and tips tailored to that industry.
 
+### How Industries Benefit from Digital Product Factory
+
+#### Affiliate Marketing
+**Who:** Product reviewers, email marketers, comparison site owners, YouTube reviewers  
+**Benefits:**
+- **AI Content Generation**: Create review copy, email sequences, and social posts in minutes
+- **Legal Compliance**: Auto-generate affiliate disclosures and FTC compliance text
+- **Bundle Builder**: Stack bonus products to increase conversions 30-50%
+- **Scheduler**: Time email sequences for optimal open rates
+- **Contract Generator**: Protect yourself with proper terms
+
+**How to Use:**
+1. Load the Affiliate Marketing preset
+2. Research products in the Market Research module
+3. Use AI Generation to write authentic reviews
+4. Bundle bonuses with the Bundle Builder
+5. Schedule launch sequences
+6. Export deliverables in multiple formats
+
+---
+
+#### Content Creator / Influencer
+**Who:** YouTubers, TikTok creators, Instagram influencers, podcasters, newsletter writers  
+**Benefits:**
+- **Sponsor Deal Management**: Generate contracts, SOWs, and rate cards
+- **Content Pipeline**: Track scripts → filming → editing → publishing
+- **Media Kit Builder**: Create professional press kits and portfolios
+- **Legal Protection**: Usage rights, revision limits, payment terms
+- **Repurposing System**: Archive content for future remix and clip extraction
+
+**How to Use:**
+1. Load the Content Creator preset
+2. Use AI Generation for content ideas and scripts
+3. Track production in the Pipeline
+4. Generate sponsor contracts
+5. Build media kits with Bundle Builder
+6. Schedule content calendar
+7. Export campaign reports for brands
+
+---
+
+#### Creator + Affiliate Hybrid
+**Who:** YouTubers with affiliate links, newsletter writers, review channel owners  
+**Benefits:**
+- **Dual Revenue Streams**: Manage brand deals AND affiliate revenue in one workflow
+- **Authentic Integration**: Blend sponsored content with natural affiliate mentions
+- **Legal Shield**: Combined sponsor terms + affiliate disclosure compliance
+- **Value Stacking**: Build email list (freebie) → nurture → affiliate pitch
+- **Performance Tracking**: Compare organic vs. affiliate content metrics
+
+**How to Use:**
+1. Load the Hybrid preset
+2. Map organic content to affiliate opportunities
+3. Create sponsor pitches AND apply to affiliate programs
+4. Use AI to integrate recommendations naturally
+5. Build lead magnets + bonus stacks
+6. Schedule coordinated campaigns
+7. Split test and optimize
+
+---
+
+#### E-Learning & Online Courses
+**Who:** Course creators, coaches, mentors, training program builders, membership site owners  
+**Benefits:**
+- **Curriculum Design**: AI-assisted course structure and learning objectives
+- **Content Creation**: Generate scripts, workbooks, and assessments
+- **Legal Protection**: Terms of service, enrollment agreements, refund policies
+- **Drip Scheduling**: Release content on schedule to reduce overwhelm
+- **Student Materials**: Export PDF workbooks, guides, and resources
+
+**How to Use:**
+1. Load the E-Learning preset
+2. Design curriculum with AI assistance
+3. Create lesson content and workbooks
+4. Generate legal documents
+5. Build tiered course packages
+6. Schedule drip releases
+7. Export student materials
+
+---
+
+#### SaaS & Software Products
+**Who:** SaaS founders, app developers, API providers, dev tool creators  
+**Benefits:**
+- **Product Roadmap**: Track features from idea to shipped
+- **Legal Foundation**: Terms of Service, Privacy Policy, EULA generation
+- **Beta Management**: Beta agreements and feedback collection
+- **Documentation**: Auto-generate API docs and user guides
+- **Launch Coordination**: Press kits, demo assets, launch sequences
+
+**How to Use:**
+1. Load the SaaS preset
+2. Research competitor features
+3. Track development in Pipeline
+4. Generate legal documents
+5. Manage beta program
+6. Create launch assets
+7. Export documentation
+
+---
+
+#### Digital Marketing Agency
+**Who:** Marketing agencies, PPC managers, SEO consultants, social media managers  
+**Benefits:**
+- **Client Onboarding**: Service agreements, SOWs, KPI definitions
+- **Campaign Management**: Full pipeline from pitch to performance report
+- **AI Copywriting**: Generate ad copy, content calendars, campaign concepts
+- **Automated Reporting**: Export performance reports and analytics summaries
+- **Contract Protection**: 3-month minimum commitments, scope definitions
+
+**How to Use:**
+1. Load the Marketing Agency preset
+2. Research prospects' markets
+3. Generate proposals and contracts
+4. Create campaign strategies with AI
+5. Execute and track campaigns
+6. Optimize based on data
+7. Export client reports
+
+---
+
+#### Freelancer / Consultant
+**Who:** Freelance developers, designers, writers, business consultants  
+**Benefits:**
+- **Lead Management**: Qualify prospects and track inquiries
+- **Proposal Generation**: AI-written custom proposals with pricing
+- **Contract Protection**: 50% upfront, revision limits, payment terms
+- **Project Tracking**: Milestones, check-ins, progress documentation
+- **Deliverable Packaging**: Professional export of final files
+
+**How to Use:**
+1. Load the Freelancer preset
+2. Qualify leads and estimate scope
+3. Generate proposals
+4. Create service agreements
+5. Track project milestones
+6. Manage client feedback
+7. Export final deliverables
+
+---
+
+#### Info Products & Templates
+**Who:** Template creators, ebook authors, Notion template sellers, digital download shops  
+**Benefits:**
+- **Trend Research**: Identify hot topics and validate demand
+- **Rapid Creation**: AI-generated content and designs
+- **Multi-Format Export**: PDF, DOCX, XLSX, ZIP for various platforms
+- **License Protection**: Terms of use and usage rights
+- **Bundle Strategy**: Package related products for higher order value
+
+**How to Use:**
+1. Load the Info Products preset
+2. Research trending topics
+3. Outline and create products with AI
+4. Design covers and layouts
+5. Generate license terms
+6. Create bonus bundles
+7. Export in multiple formats
+8. Launch and iterate
+
+---
+
+#### Business Setup (Complete Workflow)
+**Who:** New Etsy sellers, POD entrepreneurs, digital product beginners, side hustlers  
+**Benefits:**
+- **Step-by-Step Guidance**: 12-stage workflow from zero to launch
+- **Platform Setup**: Covers all major marketplaces (Etsy, eBay, Gumroad)
+- **Brand Building**: Name generation, logo creation, storefront design
+- **Automation**: Email systems, fulfillment, scheduling
+- **Testing Framework**: User testing and feedback collection
+
+**How to Use:**
+1. Load the Business Setup preset
+2. Complete each stage in order
+3. Use Factory modules for each step
+4. Set up accounts and storefronts
+5. Create initial product line
+6. Build marketing systems
+7. Test and optimize
+8. Launch and scale
+
+---
+
+### Industry-Specific Quick Reference
+
+| Industry | Key Modules | Primary Output | Time to First Sale |
+|----------|-------------|----------------|-------------------|
+| Affiliate Marketing | AI Generation, Scheduler, Bundle Builder | Email sequences, bonus packs | 1-2 weeks |
+| Content Creator | Pipeline, Contract Generator, Scheduler | Content calendar, media kit | 1 week |
+| Creator Hybrid | All modules | Integrated campaigns | 2-3 weeks |
+| E-Learning | AI Generation, Scheduler, Export | Course curriculum, workbooks | 1-2 months |
+| SaaS | Pipeline, Contract Generator, Export | Product + documentation | 3-6 months |
+| Marketing Agency | Market Research, AI Generation, Export | Client campaigns, reports | 1-2 weeks |
+| Freelancer | Pipeline, Contract Generator, Export | Proposals, deliverables | 1 week |
+| Info Products | AI Generation, Bundle Builder, Export | Templates, ebooks, bundles | 1-2 weeks |
+| Business Setup | All modules | Complete business launch | 1-2 months |
+
+---
+
+### Choosing the Right Preset
+
+**Just starting out?** → Business Setup  
+**Have an audience?** → Content Creator or Creator Hybrid  
+**Want passive income?** → Affiliate Marketing or Info Products  
+**Have expertise to teach?** → E-Learning  
+**Building software?** → SaaS  
+**Serving clients?** → Freelancer or Marketing Agency
+
+**Pro Tip:** You can load multiple presets and combine workflows. Many successful creators use a hybrid approach.
+
 ### Available Presets
 
 | Preset | Best For | Stages |
