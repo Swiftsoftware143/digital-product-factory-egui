@@ -1,5 +1,4 @@
 //! Digital Product Factory - Pure Rust Native Desktop App
-//! Built with egui for maximum performance
 
 mod app;
 mod pipeline;
@@ -16,11 +15,16 @@ mod database;
 mod config;
 mod presets;
 mod ui;
+pub mod mockup_compositor;
+pub mod analytics;
+pub mod publishing;
+pub mod db_ext;
+pub mod inline_help;
+pub mod admin;
 
 use eframe::NativeOptions;
 
 fn main() -> eframe::Result<()> {
-    // Native options for fast startup
     let options = NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1400.0, 900.0])

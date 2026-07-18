@@ -31,7 +31,10 @@ impl Database {
     
     fn init_tables(&self) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
-        
+
+        // Initialize analytics + publishing tables
+        crate::db_ext::init_business_tables(&conn)?;
+
         // Pipeline ideas table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS ideas (
@@ -269,6 +272,121 @@ impl Database {
                 task.enabled,
             ],
         )?;
+        Ok(())
+    }
+
+    // ── Sales Records ────────────────────────────────────────────────
+
+    pub fn load_sales_records(&self) -> SqlResult<Vec<crate::analytics::SalesRecord>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, product_id, product_name, platform, units_sold, revenue, fee, net_revenue, sale_date, recorded_at, notes
+             FROM sales_records ORDER BY sale_date DESC"
+        )?;
+
+        let records = stmt.query_map([], |row| {
+            Ok(crate::analytics::SalesRecord {
+                id: row.get(0)?,
+                product_id: row.get(1)?,
+                product_name: row.get(2)?,
+                platform: row.get(3)?,
+                units_sold: row.get::<_, i32>(4)? as u32,
+                revenue: row.get(5)?,
+                fee: row.get(6)?,
+                net_revenue: row.get(7)?,
+                sale_date: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(8)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                recorded_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(9)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                notes: row.get(10)?,
+            })
+        })?;
+
+        records.collect()
+    }
+
+    pub fn save_sales_record(&self, record: &crate::analytics::SalesRecord) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO sales_records (id, product_id, product_name, platform, units_sold, revenue, fee, net_revenue, sale_date, recorded_at, notes)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            params![
+                record.id,
+                record.product_id,
+                record.product_name,
+                record.platform,
+                record.units_sold,
+                record.revenue,
+                record.fee,
+                record.net_revenue,
+                record.sale_date.to_rfc3339(),
+                record.recorded_at.to_rfc3339(),
+                record.notes,
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_sales_record(&self, id: usize) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM sales_records WHERE id = ?1", params![id])?;
+        Ok(())
+    }
+
+    // ── Publish Logs ─────────────────────────────────────────────────
+
+    pub fn load_publish_logs(&self) -> SqlResult<Vec<crate::publishing::PublishLog>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, product_id, product_name, platform, listing_url, listing_id, status, error_message, published_at
+             FROM publish_logs ORDER BY published_at DESC"
+        )?;
+
+        let logs = stmt.query_map([], |row| {
+            Ok(crate::publishing::PublishLog {
+                id: row.get(0)?,
+                product_id: row.get(1)?,
+                product_name: row.get(2)?,
+                platform: row.get(3)?,
+                listing_url: row.get(4)?,
+                listing_id: row.get(5)?,
+                status: serde_json::from_str(&row.get::<_, String>(6)?)
+                    .unwrap_or(crate::publishing::PublishStatus::Published),
+                error_message: row.get(7)?,
+                published_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(8)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+            })
+        })?;
+
+        logs.collect()
+    }
+
+    pub fn save_publish_log(&self, log: &crate::publishing::PublishLog) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO publish_logs (id, product_id, product_name, platform, listing_url, listing_id, status, error_message, published_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            params![
+                log.id,
+                log.product_id,
+                log.product_name,
+                log.platform,
+                log.listing_url,
+                log.listing_id,
+                serde_json::to_string(&log.status).unwrap(),
+                log.error_message,
+                log.published_at.to_rfc3339(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_publish_log(&self, id: usize) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM publish_logs WHERE id = ?1", params![id])?;
         Ok(())
     }
 }

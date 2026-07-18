@@ -1,172 +1,120 @@
-# Digital Product Factory - Native Rust Edition
+# Digital Product Factory
 
-A blazing-fast, native desktop application for automated digital product creation. Built with pure Rust and egui for maximum performance.
+A high-performance Rust desktop application for creating, managing, and selling digital products. Built with egui for native speed.
 
 ## Features
 
-- **Native Speed**: Written in Rust with egui immediate-mode GUI - no web overhead
-- **Pipeline Management**: Kanban-style workflow from idea to sale
-- **Product Generation**: AI-powered creation of planners, journals, templates, and more
-- **Market Research**: Analyze Etsy, Gumroad, and other platforms
-- **License Management**: Tiered system (Personal/Team/Agency/Enterprise)
-- **Contract Generator**: Create legal contracts with guided prompts
-- **Scheduler**: Automate product creation and publishing
-- **Bundle Builder**: Create product bundles
-- **Fast Database**: SQLite with WAL mode for concurrent access
+### Core Modules
 
-## Architecture
+- **Pipeline** — Kanban-style product tracking across 7 stages
+- **Create** — 20+ digital product templates with AI generation
+- **Market Research** — Search Etsy, Gumroad, Amazon for product validation
+- **Contract Generator** — NDA, Service Agreements, Coaching Contracts and more
+- **Export** — 7 formats (Markdown, HTML, PDF, DOCX, XLSX, JSON, ZIP)
+- **Templates** — Browse and manage product templates
 
-```
-┌─────────────────────────────────────────┐
-│           egui (UI Layer)               │
-│    - Immediate mode, 60+ FPS            │
-│    - Native look and feel               │
-└─────────────────────────────────────────┘
-                    │
-┌─────────────────────────────────────────┐
-│         Application Logic               │
-│    - Pipeline, Generator, Research      │
-│    - Scheduler, Bundler, Exporter       │
-└─────────────────────────────────────────┘
-                    │
-┌─────────────────────────────────────────┐
-│         Data Layer                      │
-│    - SQLite (WAL mode)                  │
-│    - Async with Tokio                   │
-│    - Local file storage                 │
-└─────────────────────────────────────────┘
-```
+### Business Modules (Team+)
 
-## Performance
+- **Analytics** — Revenue tracking, sales records, CSV export
+- **Publishing** — Marketplace publishing (Etsy, Gumroad) with credential management
+- **Bundles** — Bundle products with discount pricing
+- **Scheduler** — Automate tasks (generation, publishing, research)
+- **Industry Presets** — 9 pre-configured workflows
 
-- **Cold start**: < 100ms
-- **UI response**: Immediate (no lag)
-- **Memory usage**: ~50MB base
-- **Binary size**: ~5MB (stripped release)
-- **Database**: WAL mode for concurrent reads/writes
+### Advanced (Agency+)
 
-## Building
+- Whitelabel branding
+- Client management
+- Custom integrations
 
-### Prerequisites
+## Quick Start
 
-- Rust 1.70+ (install from https://rustup.rs)
-- Optional: For development, `cargo-watch` for hot reload
-
-### Development Build
-
-```bash
-cd digital-product-factory-egui
+\\\ash
 cargo run
-```
+\\\
 
-### Release Build
+## Configuration Files
 
-```bash
-cargo build --release
-# Binary will be at: target/release/dpf
-```
+| File | Purpose |
+|------|---------|
+| \eature_tiers.json\ | Feature-to-license-tier mapping |
+| \pricing.json\ | Pricing and plan details |
+| \platform_formats.json\ | Marketplace format requirements |
+| \evoked_keys.json\ | Revoked license keys list |
 
-### Optimized Release
+## Inline Help
 
-The `Cargo.toml` is configured with aggressive optimizations:
-- `opt-level = 3` (maximum optimization)
-- `lto = true` (link-time optimization)
-- `strip = true` (remove debug symbols)
-- `codegen-units = 1` (better optimization)
-- `panic = "abort"` (smaller binary)
+Press **❓ Help** in the status bar or click **?** next to any section header for contextual help. Full help index available from the status bar button. All license tiers can access all help content.
+
+## License Tiers
+
+| Tier | Price | Users | Key Features |
+|------|-------|-------|--------------|
+| Personal | Free | 1 | Pipeline, Create, Research, Contracts, Export |
+| Team | \/mo | 5 | Personal + Analytics, Publishing, Bundles, Scheduler |
+| Agency | \/mo | 20 | Team + Whitelabel, Client Management |
+| Enterprise | \/mo | Unlimited | All features + API access |
 
 ## Project Structure
 
-```
-digital-product-factory-egui/
-├── Cargo.toml              # Rust dependencies and config
-├── README.md               # This file
-├── src/
-│   ├── main.rs            # Application entry point
-│   ├── app.rs             # Main app state and UI routing
-│   ├── config.rs          # Configuration management
-│   ├── database.rs        # SQLite database layer
-│   ├── pipeline.rs        # Pipeline/kanban logic
-│   ├── product_generator.rs # AI product generation
-│   ├── license_manager.rs # License key management
-│   ├── template_engine.rs # Template registry
-│   ├── research.rs        # Market research
-│   ├── scheduler.rs       # Task scheduling
-│   ├── bundler.rs         # Bundle creation
-│   ├── exporter.rs        # Export products
-│   ├── contract_generator.rs # Legal contracts
-│   └── ui/                # UI modules
-│       ├── mod.rs
-│       ├── sidebar.rs
-│       ├── main_content.rs
-│       ├── status_bar.rs
-│       ├── pipeline_view.rs
-│       ├── dashboard_view.rs
-│       ├── create_view.rs
-│       ├── settings_dialog.rs
-│       ├── license_dialog.rs
-│       └── components.rs
-└── assets/                # Fonts, icons, etc.
-    └── Inter-Regular.ttf
-```
+\\\
+dpf/
+  src/
+    main.rs
+    app.rs              # Application state and UI routing
+    config.rs           # App configuration
+    database.rs         # SQLite database layer
+    inline_help.rs      # Inline help system
+    pipeline.rs         # Kanban pipeline
+    product_generator.rs # AI product generation
+    license_manager.rs   # License key management
+    llm_router.rs       # AI model routing
+    research.rs         # Market research
+    scheduler.rs        # Task scheduling
+    bundler.rs          # Product bundling
+    exporter.rs         # Export to various formats
+    contract_generator.rs # Legal contract generation
+    presets.rs          # Industry presets
+    analytics.rs        # Sales analytics
+    publishing.rs       # Marketplace publishing
+    db_ext.rs           # Database extensions
+    ui/
+      mod.rs            # UI module routing
+      main_content.rs   # Tab routing
+      sidebar.rs        # Navigation sidebar
+      status_bar.rs     # Bottom status bar
+      pipeline_view.rs  # Pipeline Kanban UI
+      dashboard_view.rs # Dashboard UI
+      create_view.rs    # Create product UI
+      settings_dialog.rs # Settings UI
+      license_dialog.rs # License entry UI
+      analytics_view.rs # Analytics UI
+      publish_view.rs   # Publishing UI
+      bundle_view.rs    # Bundle management UI
+      scheduler_view.rs # Scheduler UI
+      contract_view.rs  # Contract generator UI
+      research_view.rs  # Market research UI
+      presets_view.rs   # Industry presets UI
+      components.rs     # Shared UI components
+  GUIDE.md              # User guide
+  ADMIN_GUIDE.md        # Admin guide
+  README.md             # This file
+\\\
 
-## Key Design Decisions
+## Requirements
 
-### Why egui?
+- Rust 2021 edition
+- SQLite (bundled)
+- API keys (user-provided): OpenAI, Anthropic, and/or Google
 
-- **Immediate mode**: No retained state, no UI lag
-- **Pure Rust**: No JavaScript, no webview overhead
-- **Fast**: 60+ FPS even with complex UIs
-- **Portable**: Single binary, no dependencies
-- **Small**: Minimal binary size
+## Build
 
-### Why SQLite?
+\\\ash
+cargo build --release
+\\\
 
-- **Embedded**: No separate server
-- **Fast**: WAL mode for concurrent access
-- **Reliable**: ACID transactions
-- **Portable**: Single file database
+## Documentation
 
-### Why Tokio?
-
-- **Async**: Non-blocking I/O for API calls
-- **Ecosystem**: Rich library support
-- **Performance**: Efficient task scheduling
-
-## Roadmap
-
-### Phase 1: Core (Current)
-- [x] Basic UI framework
-- [x] Pipeline kanban view
-- [x] Database layer
-- [x] Settings management
-
-### Phase 2: Product Creation
-- [ ] Template browser
-- [ ] Product generator
-- [ ] Preview renderer
-- [ ] Export functionality
-
-### Phase 3: Research & Automation
-- [ ] Market research tools
-- [ ] Scheduler
-- [ ] Bundle builder
-- [ ] Contract generator
-
-### Phase 4: Polish
-- [ ] License activation
-- [ ] Auto-updater
-- [ ] Analytics
-- [ ] Cloud sync (optional)
-
-## License
-
-[Your License Here]
-
-## Credits
-
-Built with:
-- [egui](https://github.com/emilk/egui) - Immediate mode GUI
-- [eframe](https://github.com/emilk/egui/tree/master/crates/eframe) - egui framework
-- [Tokio](https://tokio.rs/) - Async runtime
-- [rusqlite](https://github.com/rusqlite/rusqlite) - SQLite bindings
+- **User Guide:** \GUIDE.md\
+- **Admin Guide:** \ADMIN_GUIDE.md\
+- **Inline Help:** Press ❓ in the app status bar

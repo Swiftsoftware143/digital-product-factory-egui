@@ -1,6 +1,6 @@
 [package]
 name = "digital-product-factory"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 authors = ["SwiftSoftware143"]
 description = "Digital Product Factory - Native Rust desktop app for automated digital product creation"
@@ -46,6 +46,16 @@ notify-rust = { version = "4.10", optional = true }
 
 # Tray icon
 tray-icon = { version = "0.11", optional = true }
+
+# ── NEW: Publishing & Analytics ───────────────────────────────────────
+keyring = "2.3"
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+uuid = { version = "1", features = ["v4"] }
+async-trait = "0.1"
+tracing = "0.1"
+
+# For file dialogs (optional, graceful fallback)
+rfd = "0.14"
 
 [features]
 default = ["notifications"]

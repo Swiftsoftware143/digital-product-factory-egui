@@ -1,50 +1,68 @@
-//! Fast sidebar navigation
+//! Sidebar â€” Navigation
 
 use egui::*;
 use crate::app::{DpfApp, Tab};
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
-    let width = if app.sidebar_expanded { 200.0 } else { 50.0 };
-    
     SidePanel::left("sidebar")
-        .exact_width(width)
         .resizable(false)
+        .default_width(180.0)
         .show(ctx, |ui| {
-            ui.vertical(|ui| {
-                // Toggle button
-                if ui.button(if app.sidebar_expanded { "◀" } else { "▶" }).clicked() {
-                    app.sidebar_expanded = !app.sidebar_expanded;
-                }
-                
-                ui.separator();
-                
-                // Navigation items
-                nav_button(app, ui, Tab::Dashboard, "📊", "Dashboard");
-                nav_button(app, ui, Tab::Pipeline, "🔄", "Pipeline");
-                nav_button(app, ui, Tab::Create, "➕", "Create");
-                nav_button(app, ui, Tab::Research, "🔍", "Research");
-                nav_button(app, ui, Tab::Templates, "📋", "Templates");
-                nav_button(app, ui, Tab::Bundles, "📦", "Bundles");
-                nav_button(app, ui, Tab::Scheduler, "⏰", "Scheduler");
-                nav_button(app, ui, Tab::Presets, "🎯", "Presets");
-                
-                ui.separator();
-                
-                nav_button(app, ui, Tab::Settings, "⚙", "Settings");
+            ui.vertical_centered(|ui| {
+                ui.heading("DPF");
             });
-        });
-}
 
-fn nav_button(app: &mut DpfApp, ui: &mut Ui, tab: Tab, icon: &str, label: &str) {
-    let selected = app.current_tab == tab;
-    
-    let response = if app.sidebar_expanded {
-        ui.selectable_label(selected, format!("{} {}", icon, label))
-    } else {
-        ui.selectable_label(selected, icon)
-    };
-    
-    if response.clicked() {
-        app.current_tab = tab;
-    }
+            ui.separator();
+
+            // Main tabs
+            ui.label("Main");
+            if ui.selectable_label(app.current_tab == Tab::Dashboard, "ðŸ“Š Dashboard").clicked() {
+                app.current_tab = Tab::Dashboard;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Pipeline, "ðŸ“‹ Pipeline").clicked() {
+                app.current_tab = Tab::Pipeline;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Create, "ðŸ› ï¸ Create").clicked() {
+                app.current_tab = Tab::Create;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Research, "ðŸ” Research").clicked() {
+                app.current_tab = Tab::Research;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Templates, "ðŸ“ Templates").clicked() {
+                app.current_tab = Tab::Templates;
+            }
+
+            ui.separator();
+            ui.label("Tools");
+            if ui.selectable_label(app.current_tab == Tab::Bundles, "ðŸ“¦ Bundles").clicked() {
+                app.current_tab = Tab::Bundles;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Scheduler, "â° Scheduler").clicked() {
+                app.current_tab = Tab::Scheduler;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Mockup, "ðŸŽ¨ Mockups").clicked() {
+                app.current_tab = Tab::Mockup;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Presets, "ðŸŽ¯ Presets").clicked() {
+                app.current_tab = Tab::Presets;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Contract, "ðŸ“ Contracts").clicked() {
+                app.current_tab = Tab::Contract;
+            }
+
+            ui.separator();
+            ui.label("Business");
+            if ui.selectable_label(app.current_tab == Tab::Analytics, "ðŸ“ˆ Analytics").clicked() {
+                app.current_tab = Tab::Analytics;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Publish, "ðŸ“¤ Publish").clicked() {
+                app.current_tab = Tab::Publish;
+            }
+
+            ui.separator();
+            if ui.selectable_label(app.current_tab == Tab::Admin, "ðŸ›¡ï¸ Admin").clicked() {
+                app.current_tab = Tab::Admin;
+                app.admin.admin_mode = true;
+            }
+        });
 }

@@ -14,6 +14,10 @@ pub mod research_view;
 pub mod scheduler_view;
 pub mod bundle_view;
 pub mod presets_view;
+pub mod analytics_view;
+pub mod mockup_view;
+pub mod publish_view;
+pub mod admin_view;
 
 pub use create_view::show as create_view;
 

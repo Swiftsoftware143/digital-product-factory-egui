@@ -4,7 +4,8 @@ use egui::*;
 use std::sync::Arc;
 use tokio::runtime::Runtime;
 
-use crate::{
+use crate::{admin::AdminState,
+    mockup_compositor::MockupCompositor,
     pipeline::{Pipeline, PipelineStage, ProductIdea},
     product_generator::ProductGenerator,
     license_manager::LicenseManager,
@@ -17,16 +18,15 @@ use crate::{
     database::Database,
     config::AppConfig,
     presets::PresetRegistry,
-    ui::{sidebar, main_content, status_bar},
+    analytics::Analytics,
+    publishing::PublishManager,
+    ui::{sidebar, main_content, status_bar, analytics_view, publish_view, settings_dialog, license_dialog},
 };
 
 pub struct DpfApp {
-    // Core state
     pub db: Arc<Database>,
     pub runtime: Arc<Runtime>,
     pub config: AppConfig,
-
-    // Modules
     pub pipeline: Pipeline,
     pub generator: ProductGenerator,
     pub license_manager: LicenseManager,
@@ -37,43 +37,39 @@ pub struct DpfApp {
     pub exporter: Exporter,
     pub contract_generator: ContractGenerator,
     pub preset_registry: PresetRegistry,
-
-    // UI State
+    pub analytics: Analytics,
+    pub publish_manager: PublishManager,
+    pub mockup_compositor: MockupCompositor,
+    pub admin: AdminState,
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
     pub search_query: String,
     pub selected_product: Option<usize>,
     pub show_settings: bool,
     pub show_license_dialog: bool,
-    
-    // Preset State
+    pub show_add_sale_dialog: bool,
     pub selected_preset_id: Option<String>,
     pub loaded_preset_id: Option<String>,
-
-    // Performance
+    pub selected_platform: Option<String>,
+    pub new_api_key: String,
+    pub publish_target: String,
+    pub publish_price: f64,
+    pub pending_publish: Option<(String, String, f64)>,
+    pub new_sale: analytics_view::NewSaleDraft,
+    pub active_help_topic: Option<String>,
     pub last_frame_time: std::time::Instant,
     pub fps: f32,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tab {
-    Dashboard,
-    Pipeline,
-    Create,
-    Research,
-    Templates,
-    Bundles,
-    Scheduler,
-    Presets,
-    Settings,
+    Dashboard, Pipeline, Mockup, Create, Research, Templates,
+    Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings, Admin,
 }
 
 impl DpfApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // Load fonts for crisp text (use embedded or system font)
         let mut fonts = egui::FontDefinitions::default();
-        
-        // Try to load Inter font if available, otherwise use default
         #[cfg(feature = "embed-font")]
         {
             fonts.font_data.insert(
@@ -85,33 +81,21 @@ impl DpfApp {
                 .or_default()
                 .insert(0, "inter".to_owned());
         }
-        
         cc.egui_ctx.set_fonts(fonts);
-        
-        // Load previous state if any
+
         let config = if let Some(storage) = cc.storage {
             eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default()
         } else {
             AppConfig::default()
         };
-        
-        // Initialize async runtime
+
         let runtime = Arc::new(Runtime::new().expect("Failed to create Tokio runtime"));
-        
-        // Initialize database
         let db = Arc::new(Database::new().expect("Failed to initialize database"));
-        
-        // Load modules
+
         let pipeline = Pipeline::load(&db);
         let mut generator = ProductGenerator::new(&db, runtime.clone());
-        
-        // Set API keys from config
-        generator.set_api_keys(
-            config.openai_key.clone(),
-            config.anthropic_key.clone(),
-            config.google_key.clone(),
-        );
-        
+        generator.set_api_keys(config.openai_key.clone(), config.anthropic_key.clone(), config.google_key.clone());
+
         let license_manager = LicenseManager::new(&db);
         let template_registry = TemplateRegistry::new();
         let research = MarketResearch::new(runtime.clone());
@@ -120,29 +104,35 @@ impl DpfApp {
         let exporter = Exporter::new();
         let contract_generator = ContractGenerator::new();
         let preset_registry = PresetRegistry::new();
+        let analytics = Analytics::new(&db);
+        let publish_manager = PublishManager::new(&db);
+        let mockup_compositor = MockupCompositor::new();
+        let admin = AdminState::new();
+
+        let format_path = std::path::Path::new("platform_formats.json");
+        if !format_path.exists() {
+            PublishManager::save_formats_to_file("platform_formats.json");
+        }
 
         Self {
-            db,
-            runtime,
-            config,
-            pipeline,
-            generator,
-            license_manager,
-            template_registry,
-            research,
-            scheduler,
-            bundler,
-            exporter,
-            contract_generator,
-            preset_registry,
+            db, runtime, config,
+            pipeline, generator, license_manager, template_registry,
+            research, scheduler, bundler, exporter, contract_generator,
+            preset_registry, analytics, publish_manager, mockup_compositor,
+            admin,
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,
             search_query: String::new(),
             selected_product: None,
-            show_settings: false,
-            show_license_dialog: false,
-            selected_preset_id: None,
-            loaded_preset_id: None,
+            show_settings: false, show_license_dialog: false, show_add_sale_dialog: false,
+            selected_preset_id: None, loaded_preset_id: None,
+            selected_platform: None,
+            new_api_key: String::new(),
+            publish_target: String::new(),
+            publish_price: 9.99,
+            pending_publish: None,
+            new_sale: analytics_view::NewSaleDraft::default(),
+            active_help_topic: None,
             last_frame_time: std::time::Instant::now(),
             fps: 0.0,
         }
@@ -153,46 +143,49 @@ impl eframe::App for DpfApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, &self.config);
     }
-    
+
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        // Calculate FPS for performance monitoring
         let now = std::time::Instant::now();
         let dt = now.duration_since(self.last_frame_time).as_secs_f32();
         self.fps = 1.0 / dt;
         self.last_frame_time = now;
-        
-        // Continuous UI mode for responsiveness
-        ctx.request_repaint_after(std::time::Duration::from_millis(16)); // ~60 FPS
-        
-        // Top panel - Title bar
+        ctx.request_repaint_after(std::time::Duration::from_millis(16));
+
+        if let Some((product_name, platform, price)) = self.pending_publish.take() {
+            let product_id = self.pipeline.ideas.iter()
+                .find(|i| i.title == product_name)
+                .map(|i| i.id)
+                .unwrap_or(0);
+            tracing::info!("Queued publish: {} on {} for ${:.2}", product_name, platform, price);
+            let log = crate::publishing::PublishLog {
+                id: self.publish_manager.publish_logs.len() + 1,
+                product_id,
+                product_name: product_name.clone(),
+                platform: platform.clone(),
+                listing_url: None, listing_id: None,
+                status: crate::publishing::PublishStatus::Pending,
+                error_message: None,
+                published_at: chrono::Utc::now(),
+            };
+            let _ = self.db.save_publish_log(&log);
+            self.publish_manager.publish_logs.insert(0, log);
+        }
+
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.heading("Digital Product Factory");
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     ui.label(format!("{:.0} FPS", self.fps));
-                    if ui.button("⚙").clicked() {
-                        self.show_settings = true;
-                    }
+                    if ui.button("⚙").clicked() { self.show_settings = true; }
                 });
             });
         });
-        
-        // Left sidebar - Navigation
+
         sidebar::show(self, ctx);
-        
-        // Main content area
         main_content::show(self, ctx);
-        
-        // Bottom status bar
         status_bar::show(self, ctx);
-        
-        // Modal dialogs
-        if self.show_settings {
-            ui::settings_dialog::show(self, ctx);
-        }
-        
-        if self.show_license_dialog {
-            ui::license_dialog::show(self, ctx);
-        }
+
+        if self.show_settings { settings_dialog::show(self, ctx); }
+        if self.show_license_dialog { license_dialog::show(self, ctx); }
     }
 }

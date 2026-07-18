@@ -944,3 +944,123 @@ Deactivate old devices to free up slots.
 - Scheduler
 - Bundle builder
 - Export (PDF, DOCX, XLSX, ZIP)
+
+## Analytics & Sales Tracking
+
+Track revenue, fees, and performance across all your products and marketplaces.
+
+### Dashboard Summary Cards
+
+The Analytics tab shows summary cards at the top:
+- **Total Revenue** — Gross revenue from all recorded sales
+- **Total Fees** — Sum of all platform fees
+- **Net Revenue** — Revenue minus fees (your actual earnings)
+- **Total Sales** — Total units sold across all products
+- **Products** — Number of unique products with sales
+
+### Revenue by Product
+
+A scrollable list shows each product with total revenue and units sold. This lets you quickly see which products are performing best.
+
+### Adding Sales Records
+
+Click **Add Sale** to log a new sale. Enter:
+- **Product name** — Free text (matches up with pipeline products)
+- **Platform** — Etsy, Gumroad, Shopify, PayPal, etc.
+- **Units sold** — Quantity sold
+- **Revenue ($)** — Gross revenue before fees
+- **Fee ($)** — Platform/processing fees
+
+Net revenue is calculated automatically. Records are saved to the local SQLite database and persist between sessions.
+
+### Sales Records List
+
+All recorded sales are shown in a scrollable list with date, product name, units, and net revenue. Green highlighting makes profitable sales stand out.
+
+### CSV Export
+
+Click **Export CSV** to export the full sales ledger as a CSV file. Opens in Excel, Google Sheets, or any spreadsheet app. The file is saved as \sales_export.csv\ in the application directory.
+
+### Team+ Feature
+
+Analytics requires a **Team** or higher license. See License Management for upgrade options.
+
+---
+
+## Marketplace Publishing
+
+Publish digital products directly to marketplaces from within the app.
+
+### Connected Platforms
+
+| Platform | Status | Requirements |
+|----------|--------|-------------|
+| **Etsy** | ✅ Supported | API key, 3000x3000 thumbnails, 20MB max |
+| **Gumroad** | ✅ Supported | Access token, 1280x720 thumbnails, 50MB max |
+| **Shopify** | 🔧 Coming Soon | — |
+| **Payhip** | 🔧 Coming Soon | — |
+
+### Credential Management
+
+API keys are stored in your **OS keychain** (not in plaintext files). Each platform button shows:
+- ✅ **Green check** — Credentials stored and ready
+- ❌ **Red X** — No credentials configured
+
+To add credentials:
+1. Select a platform from the left panel
+2. Enter your API key or access token
+3. Click **Save Key**
+4. The key is encrypted via your OS keychain
+
+To remove credentials, click **Remove** — it deletes the key from the keychain.
+
+### Publish a Product
+
+1. Move a product to the **Listed** or **Review** stage in the Pipeline
+2. Go to the Publishing tab
+3. Select a platform (must have credentials saved)
+4. Choose the product from the dropdown
+5. Set a price
+6. Click **Publish**
+
+The publish is queued and a log entry is created. Actual publishing to marketplace APIs requires marketplace-specific formatting handled by the platform format rules.
+
+### Platform Format Configuration
+
+Platform-specific requirements are stored in \platform_formats.json\:
+
+- Thumbnail dimensions (width x height)
+- Max file size in MB
+- Max title length (characters)
+- Max description length (characters)
+- Max tags count
+
+You can edit this JSON file directly to update rules without rebuilding the app.
+
+### Publish Log
+
+Every publish attempt is logged. Each entry shows:
+- Date and time
+- Product name
+- Target platform
+- Status: ✅ Published / ⏳ Pending / ❌ Failed / Removed
+- Link to live listing (if available)
+
+### Team+ Feature
+
+Marketplace Publishing requires a **Team** or higher license.
+
+---
+
+## Inline Help System
+
+Throughout the app, look for **❓ Help** in the status bar and **?** buttons next to feature headers.
+
+- **Status bar help button** — Opens the full Help Index with all topics
+- **Per-feature help buttons** — Click **?** next to any section header for contextual help
+- **Help Index** — Browseable list of all help topics, grouped by feature area
+- **Tier badges** — Help topics show which license tier a feature requires
+
+The inline help system is available on all license tiers — no license required to access help content.
+
+---
