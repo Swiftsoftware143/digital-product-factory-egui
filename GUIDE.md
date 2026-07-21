@@ -921,12 +921,221 @@ Deactivate old devices to free up slots.
 11. **Create handcrafted-looking images**: Good shops have authentic, non-stock visuals
 12. **Test multiple platforms**: Different platforms attract different buyer types
 
+
+## Pre-Publish QC Checklist
+
+Run products through a quality checklist before publishing to ensure consistency and catch issues early.
+
+### QC Checks
+
+| Check | What It Does |
+|-------|-------------|
+| **Duplicate Detection** | Scans product files for duplicates by name + size heuristic — no duplicates slip through |
+| **Format Validation** | Verifies file format matches the product type (PDF, DOCX, XLSX, etc.) |
+| **Title Check** | Ensures product title is set and reasonable length |
+| **Description Check** | Flags missing or too-short descriptions |
+| **Price Validation** | Warns if price is zero or unreasonably low |
+| **Template Compliance** | Checks that the product matches its template requirements |
+
+### Running a QC Check
+
+1. Go to **QC Checklist** tab in the sidebar
+2. Select a product from the dropdown
+3. Click **Run QC** to execute all checks
+4. Results show: ✅ Pass, ❌ Fail, ⚠️ Warning, or ⏭️ Skipped
+5. Address flagged issues, then re-run
+
+### Duplicate Registry
+
+The app maintains a **file fingerprint registry** so you never upload or publish duplicate products. The registry auto-detects when you add a file that matches a previously-registered product.
+
+### Team+ Feature
+
+QC Checklist requires a **Team** or higher license.
+
 ---
 
-*Version 1.1.0 - Native Rust Edition*
-*Last Updated: June 2026*
+## Compliance Scanner
+
+Ensure your AI-generated content complies with platform policies and disclosure requirements.
+
+### AI Disclosure Rules
+
+Configurable rules for AI-generated content disclosure:
+- **FTC Guidelines** — Auto-generated disclosure text for affiliate content
+- **Platform Rules** — Etsy, Gumroad, Amazon disclosure requirements
+- **Custom Rules** — Add your own disclosure requirements
+
+### Denylist Scanner
+
+Prevents your generation prompts from including restricted terms:
+- **Trademark violations** — Catch brand names that shouldn't appear
+- **Restricted categories** — Health claims, financial advice, etc.
+- **Platform banned terms** — Terms that get products removed from marketplaces
+
+### Tool License Checks
+
+When generating with AI, the scanner checks that the output tool licenses are compatible with your intended use (commercial, resale, personal).
+
+### Using Compliance
+
+1. Go to **Compliance** tab in the sidebar
+2. Configure disclosure rules (or use defaults)
+3. Add denylist terms as needed
+4. Run a scan before generating or publishing
+
+### Team+ Feature
+
+Compliance Scanner requires a **Team** or higher license.
+
+---
+
+## Asset Library
+
+Manage your media assets — images, logos, icons, and fonts — in one central location.
+
+### Features
+
+- **Asset browser** — Browse all uploaded assets with thumbnails and tags
+- **Tag system** — Tag assets by product, project, or category for easy filtering
+- **Version tracking** — Each asset keeps version history (overwrites become new versions)
+- **Rollback** — Restore any previous version of an asset
+- **Cloud backup config** — Configure backup destinations (configurable JSON, no hardcoded settings)
+
+### Adding Assets
+
+1. Go to **Asset Library** tab in the sidebar
+2. Click **Add Asset** and select a file (PNG, JPG, TTF, OTF, SVG)
+3. Add tags and notes for organization
+4. The asset is stored locally in the app's data directory
+
+### Versioning
+
+Every time you register a new version of an existing asset, the old version is preserved. You can:
+- Click **Versions** on any asset to see its history
+- Click **Rollback** to restore a previous version
+- See timestamps and notes for each version
+
+### Cloud Backup Configuration
+
+Edit `backup_config.json` to set cloud backup destinations. The config file is editable without rebuilding the app:
+
+```json
+{
+  "enabled": false,
+  "scheduled_backup": false,
+  "backup_interval_hours": 24,
+  "retention_days": 30,
+  "destinations": []
+}
+```
+
+### Team+ Feature
+
+Asset Library requires a **Team** or higher license.
+
+---
+
+## Webhooks
+
+Automate workflows by connecting external tools via HTTP webhooks.
+
+### How It Works
+
+The app runs a lightweight HTTP server on a local port (default: 9823). External tools can send POST requests to trigger actions.
+
+### Available Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/generate` | POST | Trigger product generation with JSON payload |
+| `/status` | GET | Check if webhook server is running |
+| `/schema` | GET | Get JSON schema for the generate endpoint |
+
+### Generate Request Format
+
+```json
+{
+  "template_id": "daily-planner",
+  "name": "My Product",
+  "params": {
+    "color_scheme": "pastel",
+    "page_count": 30
+  },
+  "model": "gpt-4o"
+}
+```
+
+### Starting the Server
+
+1. Go to **Webhooks** tab in the sidebar
+2. Set the port (default 9823)
+3. Click **Start Webhook**
+4. The server starts and shows **running** status
+5. Send POST requests from your automation tools
+
+### Security
+
+The webhook server binds to **localhost only** — not exposed to your network. Keep the port closed in your firewall.
+
+### Team+ Feature
+
+Webhooks require a **Team** or higher license.
+
+---
+
+## Product Variants
+
+Create multiple variants of a product for different formats, prices, or configurations — with full version history.
+
+### What Are Variants?
+
+A product in your pipeline can have multiple variants. For example:
+- **"Daily Planner"** → Variant: PDF ($9.99), Variant: DOCX ($12.99), Variant: Notion Template ($14.99)
+- **"Logo Pack"** → Variant: Full Color ($29), Variant: B&W ($19), Variant: SVG Source ($49)
+
+### Versioning
+
+Each variant tracks its own version history:
+- Every time you update a variant's content, a new version snapshot is saved
+- Old versions are never deleted — you can view or restore them
+- Active version is shown with a green ▶ indicator
+
+### Using Variants
+
+1. Go to **Variants** tab in the sidebar
+2. Select a product from the dropdown
+3. Click **Add Variant** to create a new variant
+4. Set: name, format (PDF, DOCX, XLSX, ZIP, PNG, JPG, HTML, Markdown, JSON, TXT), and price
+5. The variant is created as Draft — add content and set to Active
+6. Click the clipboard icon on any variant to view version history
+7. Click **Restore** to rollback to a previous version
+
+### All Tiers
+
+Product Variants are available on all license tiers — Personal, Team, Agency, and Enterprise.
+
+---
+
+---
+
+*Version 1.3.0 - Native Rust Edition*
+*Last Updated: July 2026*
 
 ## Changelog
+
+### v1.3.0
+- Added **Product Variants & Versioning** — multiple variants per product with full version history and rollback
+- Added **Pre-Publish QC Checklist** — duplicate detection, format validation, title/description/price checks
+- Added **Compliance Scanner** — AI disclosure rules, denylist scanner, tool license checks
+- Added **Asset Library** — local media manager with tag system, version tracking, and cloud backup config
+- Added **Webhooks** — HTTP webhook server for external tool integration
+- Updated feature_tiers.json with new module tier gating
+- Updated ADMIN_GUIDE.md with new feature listings
+
+### v1.2.0
+- Added QC, Compliance, Asset Library, and Webhooks modules
+- Updated pricing and feature tier configs
 
 ### v1.1.0
 - Added **Industry Presets** with 9 pre-configured workflows
@@ -987,7 +1196,7 @@ Analytics requires a **Team** or higher license. See License Management for upgr
 
 ---
 
-## Marketplace Publishing
+## Pre-Publish QC Checklist
 
 Publish digital products directly to marketplaces from within the app.
 

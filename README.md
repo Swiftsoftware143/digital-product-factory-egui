@@ -12,6 +12,7 @@ A high-performance Rust desktop application for creating, managing, and selling 
 - **Contract Generator** — NDA, Service Agreements, Coaching Contracts and more
 - **Export** — 7 formats (Markdown, HTML, PDF, DOCX, XLSX, JSON, ZIP)
 - **Templates** — Browse and manage product templates
+- **Product Variants** — Multiple variants per product with version history
 
 ### Business Modules (Team+)
 
@@ -20,9 +21,13 @@ A high-performance Rust desktop application for creating, managing, and selling 
 - **Bundles** — Bundle products with discount pricing
 - **Scheduler** — Automate tasks (generation, publishing, research)
 - **Industry Presets** — 9 pre-configured workflows
+- **QC Checklist** — Pre-publish quality checks and duplicate detection
+- **Asset Library** — Local media manager with version tracking
+- **Webhooks** — HTTP webhook server for external tools
 
 ### Advanced (Agency+)
 
+- **Compliance Scanner** — AI disclosure rules and denylist checks
 - Whitelabel branding
 - Client management
 - Custom integrations
@@ -40,7 +45,8 @@ cargo run
 | \eature_tiers.json\ | Feature-to-license-tier mapping |
 | \pricing.json\ | Pricing and plan details |
 | \platform_formats.json\ | Marketplace format requirements |
-| \evoked_keys.json\ | Revoked license keys list |
+| \
+evoked_keys.json\ | Revoked license keys list |
 
 ## Inline Help
 
