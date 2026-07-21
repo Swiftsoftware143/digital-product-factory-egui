@@ -24,6 +24,7 @@ use crate::{admin::AdminState,
     webhook::WebhookState,
     asset_library::AssetLibrary,
     compliance::{DenylistScanner, AiDisclosureRule, AiToolLicense},
+    product_variants::VariantManager,
     ui::{sidebar, main_content, status_bar, analytics_view, publish_view, settings_dialog, license_dialog},
 };
 
@@ -51,6 +52,7 @@ pub struct DpfApp {
     pub asset_library: AssetLibrary,
     pub denylist_scanner: DenylistScanner,
     pub disclosure_rules: Vec<AiDisclosureRule>,
+    pub variant_manager: VariantManager,
     // ── UI State ─────────────────────────────────────────────────
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
@@ -93,7 +95,7 @@ pub struct DpfApp {
 pub enum Tab {
     Dashboard, Pipeline, Mockup, Create, Research, Templates,
     Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings,
-    Admin, QC, AssetLibrary, Compliance, Webhooks,
+    Admin, QC, AssetLibrary, Compliance, Webhooks, Variants,
 }
 
 impl DpfApp {
@@ -164,6 +166,7 @@ impl DpfApp {
             // ── NEW MODULES ──────────────────────────────────────
             qc_engine,
             webhook_state: WebhookState::new(false, 9823),
+            variant_manager: VariantManager::new(&db),
             asset_library,
             denylist_scanner: DenylistScanner::new(),
             disclosure_rules,

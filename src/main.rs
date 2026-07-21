@@ -24,6 +24,7 @@ pub mod admin;
 pub mod qc;
 pub mod webhook;
 pub mod asset_library;
+pub mod product_variants;
 pub mod compliance;
 
 use eframe::NativeOptions;

@@ -32,6 +32,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         Tab::QC => show_qc(app, ctx),
         Tab::Compliance => show_compliance(app, ctx),
         Tab::AssetLibrary => show_asset_library(app, ctx),
+        Tab::Variants => super::variants_view::show(app, ctx),
         Tab::Webhooks => show_webhooks(app, ctx),
     }
 
