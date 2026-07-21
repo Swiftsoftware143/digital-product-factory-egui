@@ -1,11 +1,11 @@
-//! Main content area - routes to current tab
+//! Main content area — routes to current tab
 
 use egui::*;
 use crate::app::{DpfApp, Tab};
 use crate::inline_help;
 use crate::qc::{QcResult, QcCheck, QcStatus};
 use crate::compliance::DenylistScanner;
-use super::{pipeline_view, analytics_view, publish_view, mockup_view, admin_view};
+use super::{pipeline_view, analytics_view, publish_view, mockup_view, admin_view, variants_view};
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     // Show modal dialogs
@@ -28,11 +28,11 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         Tab::Mockup => mockup_view::show(app, ctx),
         Tab::Settings => show_settings(app, ctx),
         Tab::Admin => admin_view::show(app, ctx),
-        // ?????? NEW TABS ??????
+        Tab::Variants => variants_view::show(app, ctx),
+        // New tabs from remote
         Tab::QC => show_qc(app, ctx),
         Tab::Compliance => show_compliance(app, ctx),
         Tab::AssetLibrary => show_asset_library(app, ctx),
-        Tab::Variants => super::variants_view::show(app, ctx),
         Tab::Webhooks => show_webhooks(app, ctx),
     }
 
@@ -70,7 +70,7 @@ fn show_dashboard(app: &mut DpfApp, ctx: &Context) {
             ui.label("  No sales recorded yet.");
         } else {
             for r in &recent {
-                ui.label(format!("  {} ?? {} ??? ${:.2}", r.sale_date.format("%Y-%m-%d"), r.product_name, r.net_revenue));
+                ui.label(format!("  {} · {} — ${:.2}", r.sale_date.format("%Y-%m-%d"), r.product_name, r.net_revenue));
             }
         }
     });
@@ -137,17 +137,16 @@ fn show_settings(app: &mut DpfApp, ctx: &Context) {
     });
 }
 
-// ?????? Priority 5: QC Checklist View ???????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// ── QC Checklist View ─────────────────────────────────────────────────
 
 fn show_qc(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
         ui.horizontal(|ui| {
-            ui.heading("??? Pre-Publish QC Checklist");
+            ui.heading("✅ Pre-Publish QC Checklist");
             inline_help::help_button(ui, "qc", &mut app.active_help_topic);
         });
         ui.separator();
 
-        // Select product from pipeline
         let products: Vec<_> = app.pipeline.ideas.iter()
             .filter(|i| i.stage == crate::pipeline::PipelineStage::Review
                      || i.stage == crate::pipeline::PipelineStage::Listed)
@@ -172,7 +171,6 @@ fn show_qc(app: &mut DpfApp, ctx: &Context) {
             }
         });
 
-        // Platform selector
         ui.horizontal(|ui| {
             ui.label("Target Platform:");
             for p in &["etsy", "gumroad", "shopify", "payhip"] {
@@ -183,9 +181,8 @@ fn show_qc(app: &mut DpfApp, ctx: &Context) {
             }
         });
 
-        // Run QC button
         if let Some(pid) = app.qc_target_product_id {
-            if ui.button("???? Run QC Check").clicked() {
+            if ui.button("▶ Run QC Check").clicked() {
                 if let Some(product) = app.pipeline.ideas.iter().find(|i| i.id == pid) {
                     let file_path = product.notes.split('\n').find(|l| l.starts_with("file:"))
                         .map(|l| l[5..].trim().to_string());
@@ -209,17 +206,16 @@ fn show_qc(app: &mut DpfApp, ctx: &Context) {
 
         ui.separator();
 
-        // Show QC results
         if let Some(result) = &app.qc_current_result {
-            let icon = if result.passed { "???" } else { "???" };
+            let icon = if result.passed { "✅" } else { "❌" };
             ui.heading(format!("{} QC Result: {}", icon, result.product_name));
 
             for check in &result.checks {
                 let (c_icon, c_color) = match check.status {
-                    QcStatus::Pass => ("???", Color32::GREEN),
-                    QcStatus::Fail => ("???", Color32::RED),
-                    QcStatus::Warning => ("??????", Color32::YELLOW),
-                    QcStatus::Skipped => ("??????", Color32::GRAY),
+                    QcStatus::Pass => ("✅", Color32::GREEN),
+                    QcStatus::Fail => ("❌", Color32::RED),
+                    QcStatus::Warning => ("⚠️", Color32::YELLOW),
+                    QcStatus::Skipped => ("⏭️", Color32::GRAY),
                 };
                 ui.horizontal(|ui| {
                     ui.colored_label(c_color, format!("{} {}", c_icon, check.name));
@@ -229,12 +225,11 @@ fn show_qc(app: &mut DpfApp, ctx: &Context) {
 
             ui.separator();
 
-            // Manual approval toggle
             if result.passed {
                 ui.horizontal(|ui| {
                     ui.checkbox(&mut app.qc_manual_approve, "I confirm all checks passed");
                     if app.qc_manual_approve {
-                        ui.colored_label(Color32::GREEN, "??? Approved for publish");
+                        ui.colored_label(Color32::GREEN, "✅ Approved for publish");
                     }
                 });
             }
@@ -244,12 +239,12 @@ fn show_qc(app: &mut DpfApp, ctx: &Context) {
     });
 }
 
-// ?????? Priority 4: Compliance View ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// ── Compliance View ───────────────────────────────────────────────────
 
 fn show_compliance(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
         ui.horizontal(|ui| {
-            ui.heading("?????? Compliance & Licensing");
+            ui.heading("⚖️ Compliance & Licensing");
             inline_help::help_button(ui, "compliance", &mut app.active_help_topic);
         });
         ui.separator();
@@ -287,7 +282,7 @@ fn show_compliance(app: &mut DpfApp, ctx: &Context) {
                         });
                         if !lic.restrictions.is_empty() {
                             for r in &lic.restrictions {
-                                ui.label(format!("  ?????? {}", r));
+                                ui.label(format!("  ⚠️ {}", r));
                             }
                         }
                     }
@@ -301,7 +296,7 @@ fn show_compliance(app: &mut DpfApp, ctx: &Context) {
                     ui.label("Paste your product prompt here...");
                     ui.text_edit_multiline(&mut app.compliance_prompt);
 
-                    if ui.button("???? Scan Prompt").clicked() {
+                    if ui.button("🔍 Scan Prompt").clicked() {
                         let flags = app.denylist_scanner.scan(&app.compliance_prompt);
                         app.compliance_scan_result = flags;
                         app.compliance_show_warning = !app.compliance_scan_result.is_empty();
@@ -309,9 +304,9 @@ fn show_compliance(app: &mut DpfApp, ctx: &Context) {
 
                     if app.compliance_show_warning {
                         if app.compliance_scan_result.is_empty() {
-                            ui.colored_label(Color32::GREEN, "??? No trademark/IP issues detected.");
+                            ui.colored_label(Color32::GREEN, "✅ No trademark/IP issues detected.");
                         } else {
-                            ui.colored_label(Color32::YELLOW, "?????? Trademark/IP Risk Detected");
+                            ui.colored_label(Color32::YELLOW, "⚠️ Trademark/IP Risk Detected");
                             for line in &app.compliance_scan_result {
                                 ui.label(line);
                             }
@@ -320,7 +315,7 @@ fn show_compliance(app: &mut DpfApp, ctx: &Context) {
                 });
 
                 ui.group(|ui| {
-                    ui.heading("Denylist ({} entries)".to_string());
+                    ui.heading("Denylist");
                     ui.label(format!("{} protected terms loaded.", app.denylist_scanner.entries.len()));
                     ui.label("Edit `revoked_keys.json` or `platform_formats.json` to customize.");
                 });
@@ -329,14 +324,14 @@ fn show_compliance(app: &mut DpfApp, ctx: &Context) {
     });
 }
 
-// ?????? Priority 3: Asset Library View ????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// ── Asset Library View ────────────────────────────────────────────────
 
 fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
         ui.horizontal(|ui| {
-            ui.heading("??????? Asset Library");
+            ui.heading("🗂️ Asset Library");
             inline_help::help_button(ui, "asset_library", &mut app.active_help_topic);
-            if ui.button("???? Refresh").clicked() {
+            if ui.button("🔄 Refresh").clicked() {
                 app.asset_library.load_from_db(&app.db);
             }
         });
@@ -344,9 +339,8 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
 
         // Search
         ui.horizontal(|ui| {
-            ui.label("????");
-            ui.text_edit_singleline(&mut app.asset_search)
-                ;
+            ui.label("🔍");
+            ui.text_edit_singleline(&mut app.asset_search);
         });
 
         ui.separator();
@@ -405,8 +399,7 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
 
                         // Register new version
                         ui.horizontal(|ui| {
-                            ui.text_edit_singleline(&mut app.asset_version_notes)
-                                ;
+                            ui.text_edit_singleline(&mut app.asset_version_notes);
                             ui.label("Change notes");
                             if ui.button("Save New Version").clicked() {
                                 app.asset_library.register_version(
@@ -425,7 +418,7 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
                         } else {
                             for v in versions.iter().rev() {
                                 ui.horizontal(|ui| {
-                                    ui.label(format!("v{} ??? {}", v.version, v.created_at.format("%Y-%m-%d")));
+                                    ui.label(format!("v{} · {}", v.version, v.created_at.format("%Y-%m-%d")));
                                     if !v.change_notes.is_empty() {
                                         ui.label(&v.change_notes);
                                     }
@@ -449,12 +442,12 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
     });
 }
 
-// ?????? Priority 6: Webhooks View ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// ── Webhooks View ─────────────────────────────────────────────────────
 
 fn show_webhooks(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
         ui.horizontal(|ui| {
-            ui.heading("???? Automation Webhooks");
+            ui.heading("🔌 Automation Webhooks");
             inline_help::help_button(ui, "webhooks", &mut app.active_help_topic);
         });
         ui.separator();
@@ -463,16 +456,14 @@ fn show_webhooks(app: &mut DpfApp, ctx: &Context) {
             ui.heading("Local HTTP Listener");
             ui.horizontal(|ui| {
                 ui.label("Port:");
-                ui.text_edit_singleline(&mut app.webhook_port)
-                    ;
+                ui.text_edit_singleline(&mut app.webhook_port);
                 ui.label("Default: 9823");
             });
 
             ui.horizontal(|ui| {
                 let is_running = app.webhook_state.is_running();
-                let status = if is_running { "???? Running" } else { "???? Stopped" };
+                let status = if is_running { "🟢 Running" } else { "🔴 Stopped" };
                 ui.label(format!("Status: {}", status));
-                ui.label(format!("Generations handled: {}", app.webhook_state.generation_count.load(std::sync::atomic::Ordering::Relaxed)));
             });
 
             ui.horizontal(|ui| {

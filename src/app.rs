@@ -8,6 +8,7 @@ use crate::{admin::AdminState,
     mockup_compositor::MockupCompositor,
     pipeline::{Pipeline, PipelineStage, ProductIdea},
     product_generator::ProductGenerator,
+    product_variants::VariantManager,
     license_manager::LicenseManager,
     templates::TemplateRegistry,
     research::MarketResearch,
@@ -45,6 +46,7 @@ pub struct DpfApp {
     pub analytics: Analytics,
     pub publish_manager: PublishManager,
     pub mockup_compositor: MockupCompositor,
+    pub variant_manager: VariantManager,
     pub admin: AdminState,
     // ── NEW MODULES ──────────────────────────────────────────────
     pub qc_engine: QcEngine,
@@ -138,6 +140,7 @@ impl DpfApp {
         let analytics = Analytics::new(&db);
         let publish_manager = PublishManager::new(&db);
         let mockup_compositor = MockupCompositor::new();
+        let variant_manager = VariantManager::new(&db);
         let admin = AdminState::new();
 
         let format_path = std::path::Path::new("platform_formats.json");
@@ -170,6 +173,7 @@ impl DpfApp {
             asset_library,
             denylist_scanner: DenylistScanner::new(),
             disclosure_rules,
+            variant_manager,
             // ── UI State ─────────────────────────────────────────
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,

@@ -35,6 +35,9 @@ impl Database {
         // Initialize analytics + publishing tables
         crate::db_ext::init_business_tables(&conn)?;
 
+        // Initialize variant tables
+        self.create_variants_table_inner(&conn)?;
+
         // Pipeline ideas table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS ideas (
@@ -140,6 +143,56 @@ impl Database {
 
         
         Ok(())
+    }
+
+    /// Create the variants + variant_versions tables (might be called separately for standalone init)
+    fn create_variants_table_inner(&self, conn: &Connection) -> SqlResult<()> {
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS variants (
+                id INTEGER PRIMARY KEY,
+                product_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                format TEXT NOT NULL DEFAULT '',
+                price REAL NOT NULL DEFAULT 0.0,
+                status TEXT NOT NULL DEFAULT 'Draft',
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                current_version INTEGER NOT NULL DEFAULT 0,
+                notes TEXT DEFAULT ''
+            )",
+            [],
+        )?;
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS variant_versions (
+                id INTEGER PRIMARY KEY,
+                variant_id INTEGER NOT NULL,
+                version_number INTEGER NOT NULL,
+                content TEXT NOT NULL DEFAULT '',
+                content_type TEXT NOT NULL DEFAULT 'text',
+                metadata TEXT DEFAULT '{}',
+                created_at TEXT NOT NULL,
+                file_size_bytes INTEGER NOT NULL DEFAULT 0
+            )",
+            [],
+        )?;
+
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_variants_product ON variants(product_id)",
+            [],
+        )?;
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_varversions_variant ON variant_versions(variant_id)",
+            [],
+        )?;
+
+        Ok(())
+    }
+
+    /// Create variant tables (public accessor for migration scenarios)
+    pub fn create_variants_table(&self) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        self.create_variants_table_inner(&conn)
     }
     
     // Pipeline operations
@@ -307,6 +360,140 @@ impl Database {
                 task.enabled,
             ],
         )?;
+        Ok(())
+    }
+
+    // ── Variant Operations ─────────────────────────────────────────────
+
+    pub fn load_variants(&self) -> SqlResult<Vec<crate::product_variants::Variant>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, product_id, name, format, price, status, created_at, updated_at, current_version, notes
+             FROM variants ORDER BY created_at DESC"
+        )?;
+
+        let variants = stmt.query_map([], |row| {
+            Ok(crate::product_variants::Variant {
+                id: row.get(0)?,
+                product_id: row.get(1)?,
+                name: row.get(2)?,
+                format: row.get(3)?,
+                price: row.get(4)?,
+                status: serde_json::from_str(&row.get::<_, String>(5)?)
+                    .unwrap_or(crate::product_variants::VariantStatus::Draft),
+                created_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                updated_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(7)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                current_version: row.get(8)?,
+                notes: row.get(9)?,
+            })
+        })?;
+
+        variants.collect()
+    }
+
+    pub fn save_variant(&self, variant: &crate::product_variants::Variant) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO variants (id, product_id, name, format, price, status, created_at, updated_at, current_version, notes)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            params![
+                variant.id,
+                variant.product_id,
+                variant.name,
+                variant.format,
+                variant.price,
+                serde_json::to_string(&variant.status).unwrap(),
+                variant.created_at.to_rfc3339(),
+                variant.updated_at.to_rfc3339(),
+                variant.current_version,
+                variant.notes,
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete_variant(&self, id: usize) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM variants WHERE id = ?1", params![id])?;
+        Ok(())
+    }
+
+    pub fn load_variant_versions(&self) -> SqlResult<Vec<crate::product_variants::VariantVersion>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, variant_id, version_number, content, content_type, metadata, created_at, file_size_bytes
+             FROM variant_versions ORDER BY variant_id, version_number DESC"
+        )?;
+
+        let versions = stmt.query_map([], |row| {
+            Ok(crate::product_variants::VariantVersion {
+                id: row.get(0)?,
+                variant_id: row.get(1)?,
+                version_number: row.get(2)?,
+                content: row.get(3)?,
+                content_type: row.get(4)?,
+                metadata: row.get(5)?,
+                created_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                file_size_bytes: row.get(7)?,
+            })
+        })?;
+
+        versions.collect()
+    }
+
+    pub fn save_variant_version(&self, version: &crate::product_variants::VariantVersion) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute(
+            "INSERT OR REPLACE INTO variant_versions (id, variant_id, version_number, content, content_type, metadata, created_at, file_size_bytes)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+            params![
+                version.id,
+                version.variant_id,
+                version.version_number,
+                version.content,
+                version.content_type,
+                version.metadata,
+                version.created_at.to_rfc3339(),
+                version.file_size_bytes,
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn load_variant_versions_for(&self, variant_id: usize) -> SqlResult<Vec<crate::product_variants::VariantVersion>> {
+        let conn = self.conn.lock().unwrap();
+        let mut stmt = conn.prepare(
+            "SELECT id, variant_id, version_number, content, content_type, metadata, created_at, file_size_bytes
+             FROM variant_versions WHERE variant_id = ?1 ORDER BY version_number DESC"
+        )?;
+
+        let versions = stmt.query_map(params![variant_id], |row| {
+            Ok(crate::product_variants::VariantVersion {
+                id: row.get(0)?,
+                variant_id: row.get(1)?,
+                version_number: row.get(2)?,
+                content: row.get(3)?,
+                content_type: row.get(4)?,
+                metadata: row.get(5)?,
+                created_at: chrono::DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
+                    .unwrap_or_default()
+                    .with_timezone(&chrono::Utc),
+                file_size_bytes: row.get(7)?,
+            })
+        })?;
+
+        versions.collect()
+    }
+
+    pub fn delete_variant_versions(&self, variant_id: usize) -> SqlResult<()> {
+        let conn = self.conn.lock().unwrap();
+        conn.execute("DELETE FROM variant_versions WHERE variant_id = ?1", params![variant_id])?;
         Ok(())
     }
 

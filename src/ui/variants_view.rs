@@ -390,21 +390,16 @@ fn show_version_history_dialog(app: &mut DpfApp, ctx: &Context, variant_id: usiz
         }
     };
 
-    let v_name = variant.name.clone();
-    let v_format = variant.format.clone();
+    let versions = app.variant_manager.get_versions(variant_id);
     let current_v = variant.current_version;
-    let versions: Vec<crate::product_variants::VariantVersion> = {
-        let vlist = app.variant_manager.get_versions(variant_id);
-        vlist.into_iter().cloned().collect()
-    };
 
-    Window::new(format!("Version History: {}", v_name))
+    Window::new(format!("Version History: {}", variant.name))
         .collapsible(false)
         .resizable(true)
         .default_size([500.0, 400.0])
         .show(ctx, |ui| {
             ui.label(format!("Variant: {} [{}] — Current: v{}",
-                v_name, v_format.to_uppercase(), current_v));
+                variant.name, variant.format.to_uppercase(), current_v));
             ui.separator();
 
             if versions.is_empty() {
@@ -453,10 +448,8 @@ fn show_version_history_dialog(app: &mut DpfApp, ctx: &Context, variant_id: usiz
                                         // Rollback (only if not current)
                                         if !is_current {
                                             if ui.button("↩ Restore").on_hover_text("Rollback to this version").clicked() {
-                                                let v_id = variant_id;
-                                                let ver_num = version.version_number;
                                                 app.variant_manager.rollback_to_version(
-                                                    &app.db, v_id, ver_num
+                                                    &app.db, variant_id, version.version_number
                                                 );
                                             }
                                         }

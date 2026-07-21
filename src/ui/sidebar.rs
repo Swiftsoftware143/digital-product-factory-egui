@@ -59,6 +59,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 app.current_tab = Tab::Publish;
             }
 
+            // Quality section
             ui.separator();
             ui.label("Quality");
             if ui.selectable_label(app.current_tab == Tab::QC, "QC Checklist").clicked() {
@@ -68,15 +69,21 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 app.current_tab = Tab::Compliance;
             }
 
+            // Product Data section
             ui.separator();
-            ui.label("Library");
+            ui.label("Product Data");
             if ui.selectable_label(app.current_tab == Tab::Variants, "Variants").clicked() {
                 app.current_tab = Tab::Variants;
             }
+
+            // Library section
+            ui.separator();
+            ui.label("Library");
             if ui.selectable_label(app.current_tab == Tab::AssetLibrary, "Asset Library").clicked() {
                 app.current_tab = Tab::AssetLibrary;
             }
 
+            // Automation
             ui.separator();
             if ui.selectable_label(app.current_tab == Tab::Webhooks, "Webhooks").clicked() {
                 app.current_tab = Tab::Webhooks;

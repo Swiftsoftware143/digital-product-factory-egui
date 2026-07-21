@@ -20,6 +20,7 @@ pub mod analytics;
 pub mod publishing;
 pub mod db_ext;
 pub mod inline_help;
+pub mod product_variants;
 pub mod admin;
 pub mod qc;
 pub mod webhook;

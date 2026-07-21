@@ -138,6 +138,24 @@ pub fn all_topics() -> Vec<HelpTopic> {
             body: "Configure API keys (OpenAI, Anthropic, Google), toggle auto-save and dark mode, set safety limits.",
             tier: "personal",
         },
+        HelpTopic {
+            id: "variants",
+            title: "Product Variants",
+            body: "Manage multiple variants per product (different formats, prices, versions). Each variant tracks version history so you can roll back to any previous version. Available on all tiers.",
+            tier: "personal",
+        },
+        HelpTopic {
+            id: "variants_add",
+            title: "Adding a Variant",
+            body: "Select a product, then click Add Variant. Choose a name, format (PDF, DOCX, ZIP, etc.), and price. A v1 snapshot is created automatically.",
+            tier: "personal",
+        },
+        HelpTopic {
+            id: "variants_version",
+            title: "Version History",
+            body: "Each variant tracks versions. Click the clipboard icon to view history. You can view old versions in read-only mode or restore them as the current version.",
+            tier: "personal",
+        },
     ]
 }
 
