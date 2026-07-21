@@ -21,6 +21,10 @@ pub mod publishing;
 pub mod db_ext;
 pub mod inline_help;
 pub mod admin;
+pub mod qc;
+pub mod webhook;
+pub mod asset_library;
+pub mod compliance;
 
 use eframe::NativeOptions;
 

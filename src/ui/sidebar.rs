@@ -1,4 +1,4 @@
-//! Sidebar â€” Navigation
+//! Sidebar — Navigation
 
 use egui::*;
 use crate::app::{DpfApp, Tab};
@@ -6,7 +6,7 @@ use crate::app::{DpfApp, Tab};
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     SidePanel::left("sidebar")
         .resizable(false)
-        .default_width(180.0)
+        .default_width(185.0)
         .show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.heading("DPF");
@@ -16,51 +16,74 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
 
             // Main tabs
             ui.label("Main");
-            if ui.selectable_label(app.current_tab == Tab::Dashboard, "ðŸ“Š Dashboard").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Dashboard, "📊 Dashboard").clicked() {
                 app.current_tab = Tab::Dashboard;
             }
-            if ui.selectable_label(app.current_tab == Tab::Pipeline, "ðŸ“‹ Pipeline").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Pipeline, "📋 Pipeline").clicked() {
                 app.current_tab = Tab::Pipeline;
             }
-            if ui.selectable_label(app.current_tab == Tab::Create, "ðŸ› ï¸ Create").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Create, "🛠️ Create").clicked() {
                 app.current_tab = Tab::Create;
             }
-            if ui.selectable_label(app.current_tab == Tab::Research, "ðŸ” Research").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Research, "🔍 Research").clicked() {
                 app.current_tab = Tab::Research;
             }
-            if ui.selectable_label(app.current_tab == Tab::Templates, "ðŸ“ Templates").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Templates, "📁 Templates").clicked() {
                 app.current_tab = Tab::Templates;
             }
 
             ui.separator();
             ui.label("Tools");
-            if ui.selectable_label(app.current_tab == Tab::Bundles, "ðŸ“¦ Bundles").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Bundles, "📦 Bundles").clicked() {
                 app.current_tab = Tab::Bundles;
             }
-            if ui.selectable_label(app.current_tab == Tab::Scheduler, "â° Scheduler").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Scheduler, "⏰ Scheduler").clicked() {
                 app.current_tab = Tab::Scheduler;
             }
-            if ui.selectable_label(app.current_tab == Tab::Mockup, "ðŸŽ¨ Mockups").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Mockup, "🎨 Mockups").clicked() {
                 app.current_tab = Tab::Mockup;
             }
-            if ui.selectable_label(app.current_tab == Tab::Presets, "ðŸŽ¯ Presets").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Presets, "🎯 Presets").clicked() {
                 app.current_tab = Tab::Presets;
             }
-            if ui.selectable_label(app.current_tab == Tab::Contract, "ðŸ“ Contracts").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Contract, "📝 Contracts").clicked() {
                 app.current_tab = Tab::Contract;
             }
 
             ui.separator();
             ui.label("Business");
-            if ui.selectable_label(app.current_tab == Tab::Analytics, "ðŸ“ˆ Analytics").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Analytics, "📈 Analytics").clicked() {
                 app.current_tab = Tab::Analytics;
             }
-            if ui.selectable_label(app.current_tab == Tab::Publish, "ðŸ“¤ Publish").clicked() {
+            if ui.selectable_label(app.current_tab == Tab::Publish, "📤 Publish").clicked() {
                 app.current_tab = Tab::Publish;
             }
 
+            // ── NEW: QC & Compliance section ──
             ui.separator();
-            if ui.selectable_label(app.current_tab == Tab::Admin, "ðŸ›¡ï¸ Admin").clicked() {
+            ui.label("Quality");
+            if ui.selectable_label(app.current_tab == Tab::QC, "✅ QC Checklist").clicked() {
+                app.current_tab = Tab::QC;
+            }
+            if ui.selectable_label(app.current_tab == Tab::Compliance, "⚖️ Compliance").clicked() {
+                app.current_tab = Tab::Compliance;
+            }
+
+            // ── NEW: Asset Library ──
+            ui.separator();
+            ui.label("Library");
+            if ui.selectable_label(app.current_tab == Tab::AssetLibrary, "🗂️ Asset Library").clicked() {
+                app.current_tab = Tab::AssetLibrary;
+            }
+
+            // ── NEW: Webhooks ──
+            ui.separator();
+            if ui.selectable_label(app.current_tab == Tab::Webhooks, "🔌 Webhooks").clicked() {
+                app.current_tab = Tab::Webhooks;
+            }
+
+            ui.separator();
+            if ui.selectable_label(app.current_tab == Tab::Admin, "🛡️ Admin").clicked() {
                 app.current_tab = Tab::Admin;
                 app.admin.admin_mode = true;
             }

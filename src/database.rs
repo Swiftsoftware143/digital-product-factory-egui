@@ -7,7 +7,7 @@ use crate::scheduler::ScheduledTask;
 use crate::license_manager::License;
 
 pub struct Database {
-    conn: Arc<Mutex<Connection>>,
+    pub conn: Arc<Mutex<Connection>>,
 }
 
 impl Database {

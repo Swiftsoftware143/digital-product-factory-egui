@@ -20,6 +20,10 @@ use crate::{admin::AdminState,
     presets::PresetRegistry,
     analytics::Analytics,
     publishing::PublishManager,
+    qc::QcEngine,
+    webhook::WebhookState,
+    asset_library::AssetLibrary,
+    compliance::{DenylistScanner, AiDisclosureRule, AiToolLicense},
     ui::{sidebar, main_content, status_bar, analytics_view, publish_view, settings_dialog, license_dialog},
 };
 
@@ -41,6 +45,13 @@ pub struct DpfApp {
     pub publish_manager: PublishManager,
     pub mockup_compositor: MockupCompositor,
     pub admin: AdminState,
+    // ── NEW MODULES ──────────────────────────────────────────────
+    pub qc_engine: QcEngine,
+    pub webhook_state: WebhookState,
+    pub asset_library: AssetLibrary,
+    pub denylist_scanner: DenylistScanner,
+    pub disclosure_rules: Vec<AiDisclosureRule>,
+    // ── UI State ─────────────────────────────────────────────────
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
     pub search_query: String,
@@ -59,12 +70,30 @@ pub struct DpfApp {
     pub active_help_topic: Option<String>,
     pub last_frame_time: std::time::Instant,
     pub fps: f32,
+    // ── QC UI state ──────────────────────────────────────────────
+    pub qc_target_product_id: Option<usize>,
+    pub qc_target_platform: String,
+    pub qc_current_result: Option<crate::qc::QcResult>,
+    pub qc_manual_approve: bool,
+    // ── Asset Library UI state ───────────────────────────────────
+    pub asset_search: String,
+    pub asset_selected_id: Option<usize>,
+    pub asset_version_notes: String,
+    // ── Compliance UI state ──────────────────────────────────────
+    pub compliance_prompt: String,
+    pub compliance_scan_result: Vec<String>,
+    pub compliance_show_warning: bool,
+    // ── Webhook UI state ─────────────────────────────────────────
+    pub webhook_port: String,
+    pub webhook_enabled: bool,
+    pub webhook_status_message: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tab {
     Dashboard, Pipeline, Mockup, Create, Research, Templates,
-    Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings, Admin,
+    Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings,
+    Admin, QC, AssetLibrary, Compliance, Webhooks,
 }
 
 impl DpfApp {
@@ -114,12 +143,31 @@ impl DpfApp {
             PublishManager::save_formats_to_file("platform_formats.json");
         }
 
+        // ── NEW MODULES INIT ─────────────────────────────────────
+        let mut qc_engine = QcEngine::new("dpf_data.db");
+        let mut asset_library = AssetLibrary::new();
+        asset_library.load_from_db(&db);
+
+        // Save default disclosure rules
+        let disclosure_path = std::path::Path::new("ai_disclosure_rules.json");
+        if !disclosure_path.exists() {
+            AiDisclosureRule::save("ai_disclosure_rules.json");
+        }
+        let disclosure_rules = AiDisclosureRule::load("ai_disclosure_rules.json");
+
         Self {
             db, runtime, config,
             pipeline, generator, license_manager, template_registry,
             research, scheduler, bundler, exporter, contract_generator,
             preset_registry, analytics, publish_manager, mockup_compositor,
             admin,
+            // ── NEW MODULES ──────────────────────────────────────
+            qc_engine,
+            webhook_state: WebhookState::new(false, 9823),
+            asset_library,
+            denylist_scanner: DenylistScanner::new(),
+            disclosure_rules,
+            // ── UI State ─────────────────────────────────────────
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,
             search_query: String::new(),
@@ -135,6 +183,23 @@ impl DpfApp {
             active_help_topic: None,
             last_frame_time: std::time::Instant::now(),
             fps: 0.0,
+            // ── QC UI state ─────────────────────────────────────
+            qc_target_product_id: None,
+            qc_target_platform: "etsy".into(),
+            qc_current_result: None,
+            qc_manual_approve: false,
+            // ── Asset Library UI state ───────────────────────────
+            asset_search: String::new(),
+            asset_selected_id: None,
+            asset_version_notes: String::new(),
+            // ── Compliance UI state ──────────────────────────────
+            compliance_prompt: String::new(),
+            compliance_scan_result: Vec::new(),
+            compliance_show_warning: false,
+            // ── Webhook UI state ─────────────────────────────────
+            webhook_port: "9823".into(),
+            webhook_enabled: false,
+            webhook_status_message: String::new(),
         }
     }
 }
