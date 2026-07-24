@@ -26,7 +26,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         ui.group(|ui| {
             ui.heading("Select Contract Type");
             
-            let generator = crate::contract_generator::ContractGenerator::new();
+            let generator = &app.contract_generator;
             for template in generator.list_templates() {
                 ui.group(|ui| {
                     ui.horizontal(|ui| {

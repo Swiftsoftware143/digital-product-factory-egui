@@ -141,7 +141,14 @@ impl DpfApp {
         let scheduler = Scheduler::new(&db, runtime.clone());
         let bundler = Bundler::new();
         let exporter = Exporter::new();
-        let contract_generator = ContractGenerator::new();
+        let mut contract_generator = ContractGenerator::new();
+        contract_generator.set_api_keys(
+            config.openai_key.clone(),
+            config.anthropic_key.clone(),
+            config.google_key.clone(),
+            config.deepseek_key.clone(),
+            config.moonshot_key.clone(),
+        );
         let preset_registry = PresetRegistry::new();
         let analytics = Analytics::new(&db);
         let publish_manager = PublishManager::new(&db);
