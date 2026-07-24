@@ -82,6 +82,7 @@ pub enum FieldType {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct GeneratedContract {
     pub title: String,
     pub content: String,

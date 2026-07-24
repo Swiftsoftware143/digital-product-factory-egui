@@ -1,6 +1,7 @@
 //! Pipeline kanban view - optimized for speed
 
 use egui::*;
+use egui_extras::{TableBuilder, Column};
 use crate::app::{DpfApp, Tab};
 use crate::pipeline::{PipelineStage, ViewMode, Priority, ProductIdea};
 
@@ -206,7 +207,8 @@ fn show_new_idea_dialog(app: &mut DpfApp, ctx: &Context) {
         .collapsible(false)
         .resizable(false)
         .show(ctx, |ui| {
-            let draft = &mut app.pipeline.new_idea_draft;
+            let mut draft = app.pipeline.new_idea_draft.clone();
+        let draft = &mut draft;
             
             ui.horizontal(|ui| {
                 ui.label("Title:");

@@ -17,7 +17,7 @@ pub struct License {
     pub metadata: Option<String>,
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum LicenseTier {
     Personal,
     Team,

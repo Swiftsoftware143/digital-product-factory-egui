@@ -2,6 +2,7 @@
 
 use crate::product_generator::GeneratedProduct;
 use crate::exporter::Exporter;
+use chrono::Datelike;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -189,12 +190,14 @@ impl Bundler {
 }
 
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub enum BundleStrategy {
     ByCategory,
     ByValue,
     Seasonal,
 }
 
+#[allow(dead_code)]
 pub struct BundleStats {
     pub product_count: usize,
     pub total_value: f64,

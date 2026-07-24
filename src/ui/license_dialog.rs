@@ -30,8 +30,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 ui.label("Enter your license key:");
                 
                 let mut key_input = String::new();
-                ui.text_edit_singleline(&mut key_input)
-                    .hint_text("XXXX-XXXX-XXXX-XXXX");
+                ui.add(egui::TextEdit::singleline(&mut key_input).hint_text("XXXX-XXXX-XXXX-XXXX"));
                 
                 if ui.button("Activate").clicked() {
                     // TODO: Validate and activate

@@ -12,6 +12,7 @@ A high-performance Rust desktop application for creating, managing, and selling 
 - **Contract Generator** — NDA, Service Agreements, Coaching Contracts and more
 - **Export** — 7 formats (Markdown, HTML, PDF, DOCX, XLSX, JSON, ZIP)
 - **Templates** — Browse and manage product templates
+- **Adverts & Campaign Suite** — Multi-format ad generation with AI copy (PAS/AIDA/BAB), 3 aspect ratios (Square, Story, Landscape), conversion scoring, campaign management, JSON export
 - **Product Variants** — Multiple variants per product with version history
 
 ### Business Modules (Team+)
@@ -27,6 +28,7 @@ A high-performance Rust desktop application for creating, managing, and selling 
 
 ### Advanced (Agency+)
 
+- **Adverts & Campaign Suite** — Campaign planning, AI creative generation, conversion scoring
 - **Compliance Scanner** — AI disclosure rules and denylist checks
 - Whitelabel branding
 - Client management
@@ -68,6 +70,9 @@ dpf/
   src/
     main.rs
     app.rs              # Application state and UI routing
+    adverts.rs           # Advert & Campaign domain types
+    advert_generator.rs  # AI ad creative generation
+    advert_export.rs     # Advert JSON export
     config.rs           # App configuration
     database.rs         # SQLite database layer
     inline_help.rs      # Inline help system

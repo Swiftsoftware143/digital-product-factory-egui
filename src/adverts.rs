@@ -1,0 +1,290 @@
+//! Adverts & Campaign Suite — Core Domain Types
+//!
+//! Defines the data model for ad creatives, campaigns, copy variations,
+//! aspect ratios, conversion scores, and AI-generated concepts.
+
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+
+// ── Aspect Ratio Definitions ──────────────────────────────────────────
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AspectRatio {
+    Square,    // 1:1   — 1080x1080
+    Story,     // 9:16  — 1080x1920
+    Landscape, // 16:9  — 1200x628
+}
+
+impl AspectRatio {
+    pub fn dimensions(&self) -> (u32, u32) {
+        match self {
+            AspectRatio::Square => (1080, 1080),
+            AspectRatio::Story => (1080, 1920),
+            AspectRatio::Landscape => (1200, 628),
+        }
+    }
+
+    pub fn label(&self) -> &'static str {
+        match self {
+            AspectRatio::Square => "1:1 Square",
+            AspectRatio::Story => "9:16 Story",
+            AspectRatio::Landscape => "16:9 Landscape",
+        }
+    }
+
+    pub fn all() -> Vec<AspectRatio> {
+        vec![AspectRatio::Square, AspectRatio::Story, AspectRatio::Landscape]
+    }
+}
+
+// ── Copywriting Frameworks ────────────────────────────────────────────
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CopyFramework {
+    Pas,  // Problem → Agitate → Solve
+    Aida, // Attention → Interest → Desire → Action
+    Bab,  // Before → After → Bridge
+}
+
+impl CopyFramework {
+    pub fn label(&self) -> &'static str {
+        match self {
+            CopyFramework::Pas => "PAS (Problem-Agitate-Solve)",
+            CopyFramework::Aida => "AIDA (Attention-Interest-Desire-Action)",
+            CopyFramework::Bab => "BAB (Before-After-Bridge)",
+        }
+    }
+
+    pub fn all() -> Vec<CopyFramework> {
+        vec![CopyFramework::Pas, CopyFramework::Aida, CopyFramework::Bab]
+    }
+}
+
+// ── Advert Model ──────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Advert {
+    pub id: usize,
+    pub campaign_id: usize,
+    pub name: String,
+    pub aspect_ratio: AspectRatio,
+    pub headline: String,
+    pub subheadline: String,
+    pub body_copy: String,
+    pub call_to_action: String,
+    pub visual_description: String,
+    pub brand_identity: BrandIdentity,
+    pub conversion_score: u8,           // 0–100
+    pub copy_framework: CopyFramework,
+    pub product_placement: ProductPlacement,
+    pub layout_spec: LayoutSpec,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub status: AdvertStatus,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AdvertStatus {
+    Draft,
+    Generated,
+    Approved,
+    Exported,
+}
+
+// ── Brand Identity ────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BrandIdentity {
+    pub brand_name: String,
+    pub tagline: String,
+    pub voice_tone: String,             // e.g. "Professional", "Playful", "Luxury"
+    pub primary_color: String,          // hex
+    pub secondary_color: String,        // hex
+    pub accent_color: String,           // hex
+    pub font_family: String,            // e.g. "Inter", "Playfair Display"
+    pub logo_description: String,
+}
+
+impl Default for BrandIdentity {
+    fn default() -> Self {
+        Self {
+            brand_name: String::new(),
+            tagline: String::new(),
+            voice_tone: "Professional".into(),
+            primary_color: "#1a1a2e".into(),
+            secondary_color: "#16213e".into(),
+            accent_color: "#e94560".into(),
+            font_family: "Inter".into(),
+            logo_description: String::new(),
+        }
+    }
+}
+
+// ── Product Placement ─────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProductPlacement {
+    pub product_name: String,
+    pub mockup_path: Option<String>,
+    pub scale_percent: f32,             // 0.0–100.0, size relative to canvas
+    pub position_x: f32,                // 0.0–100.0, percent from left
+    pub position_y: f32,                // 0.0–100.0, percent from top
+    pub rotation_degrees: f32,
+    pub shadow_enabled: bool,
+}
+
+impl Default for ProductPlacement {
+    fn default() -> Self {
+        Self {
+            product_name: String::new(),
+            mockup_path: None,
+            scale_percent: 60.0,
+            position_x: 50.0,
+            position_y: 50.0,
+            rotation_degrees: 0.0,
+            shadow_enabled: true,
+        }
+    }
+}
+
+// ── Layout Spec ───────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LayoutSpec {
+    pub headline_position: TextPosition,
+    pub subheadline_position: TextPosition,
+    pub cta_position: TextPosition,
+    pub background_style: BackgroundStyle,
+    pub color_scheme: ColorScheme,
+}
+
+impl Default for LayoutSpec {
+    fn default() -> Self {
+        Self {
+            headline_position: TextPosition::Top,
+            subheadline_position: TextPosition::Middle,
+            cta_position: TextPosition::Bottom,
+            background_style: BackgroundStyle::Gradient,
+            color_scheme: ColorScheme::Default,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum TextPosition {
+    Top,
+    Middle,
+    Bottom,
+    Left,
+    Right,
+    Center,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum BackgroundStyle {
+    Solid,
+    Gradient,
+    Image,
+    Pattern,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ColorScheme {
+    Default,
+    Light,
+    Dark,
+    Vibrant,
+    Monochrome,
+}
+
+// ── Copy Variation ────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CopyVariation {
+    pub id: usize,
+    pub headline: String,
+    pub subheadline: String,
+    pub body_copy: String,
+    pub call_to_action: String,
+    pub framework: CopyFramework,
+    pub conversion_score: u8,
+}
+
+// ── AI-Generated Concept ──────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Concept {
+    pub id: usize,
+    pub name: String,
+    pub visual_concept: String,
+    pub copy_variations: Vec<CopyVariation>,
+    pub color_scheme: ColorScheme,
+    pub background_style: BackgroundStyle,
+    pub conversion_score: u8,
+    pub notes: String,
+}
+
+// ── Campaign ──────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Campaign {
+    pub id: usize,
+    pub name: String,
+    pub description: String,
+    pub product_name: String,
+    pub target_audience: String,
+    pub platform: String,               // "facebook", "instagram", "google", "print", etc.
+    pub adverts: Vec<Advert>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub status: CampaignStatus,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum CampaignStatus {
+    Draft,
+    Active,
+    Paused,
+    Archived,
+}
+
+// ── AI Generation Config ──────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GenerationConfig {
+    pub brand_identity: BrandIdentity,
+    pub aspect_ratios: Vec<AspectRatio>,
+    pub copy_frameworks: Vec<CopyFramework>,
+    pub num_variations: usize,
+    pub include_visuals: bool,
+}
+
+impl Default for GenerationConfig {
+    fn default() -> Self {
+        Self {
+            brand_identity: BrandIdentity::default(),
+            aspect_ratios: vec![AspectRatio::Square],
+            copy_frameworks: vec![CopyFramework::Pas, CopyFramework::Bab],
+            num_variations: 2,
+            include_visuals: true,
+        }
+    }
+}
+
+// ── Export Format ─────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdvertExport {
+    pub advert: Advert,
+    pub export_format: ExportFormat,
+    pub exported_at: DateTime<Utc>,
+    pub file_path: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ExportFormat {
+    Json,
+    Png,
+    Jpeg,
+    Svg,
+}

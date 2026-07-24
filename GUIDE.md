@@ -11,8 +11,9 @@
 8. [Scheduler](#scheduler)
 9. [Exporting](#exporting)
 10. [Settings](#settings)
-11. [License Management](#license-management)
-12. [Workflow Examples](#workflow-examples)
+11. [Adverts & Campaign Suite](#adverts--campaign-suite)
+12. [License Management](#license-management)
+13. [Workflow Examples](#workflow-examples)
 
 ---
 
@@ -750,6 +751,83 @@ These prevent API overuse and platform bans.
 - **Dark mode**: Toggle light/dark theme
 - **Max concurrent tasks**: Limit parallel operations
 - **Cache size**: Database cache in MB
+
+
+---
+
+## Adverts & Campaign Suite
+
+Create advertising creatives across multiple aspect ratios with AI-generated copy, background concepts, and conversion scores.
+
+### Accessing the Feature
+
+Click **📢 Adverts** in the sidebar under the Business section.
+
+### Key Concepts
+
+- **Campaign** — A grouping of adverts targeting a specific product/audience
+- **Advert** — A single creative in a specific format with copy and visual concept
+- **Aspect Ratio** — Choose from Square (1:1, 1080×1080), Story (9:16, 1080×1920), or Landscape (16:9, 1200×628)
+- **Copy Framework** — Each advert can use PAS (Problem-Agitate-Solution), AIDA (Attention-Interest-Desire-Action), or BAB (Before-After-Bridge)
+- **Conversion Score** — AI-generated score (0-100) predicting creative effectiveness
+
+### Creating a Campaign
+
+1. Open the **📢 Adverts** tab
+2. Click **New Campaign**
+3. Enter campaign name, description, product name, and target audience
+4. Select the platform (Facebook, Instagram, Google, Print, etc.)
+5. The campaign is saved to the database automatically
+
+### Generating Ad Concepts
+
+1. Select or create a campaign
+2. In the generator section, set your parameters:
+   - Target audience description
+   - Brand identity (voice, colors, industry)
+   - Number of concepts per format
+3. Click **Generate Concepts**
+4. AI generates concepts with:
+   - Product placement at scale with positioning
+   - Copy variations in your chosen framework
+   - Background style and color schemes
+   - Conversion score for each concept
+
+### Editing Adverts
+
+In the **Composer** view, you can modify every aspect:
+- **Copy** — Edit headline, body, CTA, and tagline
+- **Brand Identity** — Adjust brand voice, colors, industry
+- **Product Placement** — Set scale (50-100%), position (center, left, right) with rotation
+- **Layout** — Toggle overlay, shadows, text position
+- Each field is editable after AI generation
+
+### Previewing Adverts
+
+The **Preview** view shows:
+- Aspect ratio canvas with guide lines (safe zone, margins, center)
+- Product mockup rendered at scale
+- Brand colors applied to background
+- Copy overlay in correct positions
+- Conversion score badge in the corner
+- CTA button preview
+
+### Exporting
+
+- **JSON Export** — Export advert concepts as structured JSON
+- Each advert exports independently or as a campaign bundle
+- Exports include: copy, layout specs, brand identity, product placement, and conversion score
+- Files are saved to the app data directory
+
+### Tips
+
+- Start with a clear target audience for better AI results
+- Generate 3-5 concepts per campaign, then pick the best
+- Higher conversion scores (80+) indicate strong creative alignment
+- Story (9:16) format works best for mobile-first campaigns
+- Landscape (16:9) is ideal for display networks and retargeting
+- Edit AI-generated copy before exporting for final polish
+
 
 ---
 

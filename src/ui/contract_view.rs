@@ -57,6 +57,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
     });
 }
 
+#[allow(dead_code)]
 pub fn show_contract_form(
     ui: &mut Ui,
     template: &crate::contract_generator::ContractTemplate,
@@ -88,7 +89,7 @@ pub fn show_contract_form(
             },
             FieldType::Date => {
                 let value = answers.entry(prompt.field.clone()).or_default();
-                ui.text_edit_singleline(value).hint_text("YYYY-MM-DD");
+                ui.add(egui::TextEdit::singleline(value).hint_text("YYYY-MM-DD"));
             },
             FieldType::Select(options) => {
                 let current = answers.get(&prompt.field).cloned().unwrap_or_default();
@@ -103,7 +104,7 @@ pub fn show_contract_form(
             },
             FieldType::Email => {
                 let value = answers.entry(prompt.field.clone()).or_default();
-                ui.text_edit_singleline(value).hint_text("email@example.com");
+                ui.add(egui::TextEdit::singleline(value).hint_text("email@example.com"));
             },
         }
         

@@ -126,7 +126,7 @@ impl TemplateRegistry {
     }
     
     fn load_builtin_templates(&mut self) {
-        let templates = vec![
+        let mut templates = vec![
             Template {
                 id: "planner_daily".to_string(),
                 name: "Daily Planner".to_string(),

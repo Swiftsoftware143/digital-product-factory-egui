@@ -29,20 +29,17 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                     
                     ui.horizontal(|ui| {
                         ui.label("OpenAI:");
-                        ui.text_edit_singleline(&mut app.config.openai_key)
-                            .password(true);
+                        ui.add(egui::TextEdit::singleline(&mut app.config.openai_key).password(true));
                     });
                     
                     ui.horizontal(|ui| {
                         ui.label("Anthropic:");
-                        ui.text_edit_singleline(&mut app.config.anthropic_key)
-                            .password(true);
+                        ui.add(egui::TextEdit::singleline(&mut app.config.anthropic_key).password(true));
                     });
                     
                     ui.horizontal(|ui| {
                         ui.label("Google:");
-                        ui.text_edit_singleline(&mut app.config.google_key)
-                            .password(true);
+                        ui.add(egui::TextEdit::singleline(&mut app.config.google_key).password(true));
                     });
                 });
                 

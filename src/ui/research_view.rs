@@ -16,8 +16,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
 
             ui.horizontal(|ui| {
                 ui.label("Search:");
-                ui.text_edit_singleline(&mut app.research.search_query)
-                    .hint_text("Enter product type or keyword...");
+                ui.add(egui::TextEdit::singleline(&mut app.research.search_query).hint_text("Enter product type or keyword..."));
 
                 if ui.button("🔍 Search").clicked() {
                     // Trigger search

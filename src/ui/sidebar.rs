@@ -79,6 +79,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
             // Library section
             ui.separator();
             ui.label("Library");
+            if ui.selectable_label(app.current_tab == Tab::Adverts, "📢 Adverts").clicked() { app.current_tab = Tab::Adverts; }
             if ui.selectable_label(app.current_tab == Tab::AssetLibrary, "Asset Library").clicked() {
                 app.current_tab = Tab::AssetLibrary;
             }

@@ -5,6 +5,7 @@ use crate::app::{DpfApp, Tab};
 use crate::inline_help;
 use crate::qc::{QcResult, QcCheck, QcStatus};
 use crate::compliance::DenylistScanner;
+use super::adverts_view;
 use super::{pipeline_view, analytics_view, publish_view, mockup_view, admin_view, variants_view};
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
@@ -34,6 +35,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         Tab::Compliance => show_compliance(app, ctx),
         Tab::AssetLibrary => show_asset_library(app, ctx),
         Tab::Webhooks => show_webhooks(app, ctx),
+        Tab::Adverts => adverts_view::show(app, ctx),
     }
 
     // Help overlay (persistent across tabs)
@@ -123,10 +125,8 @@ fn show_settings(app: &mut DpfApp, ctx: &Context) {
 
         ui.group(|ui| {
             ui.label("API Keys");
-            ui.text_edit_singleline(&mut app.config.openai_key)
-                .hint_text("OpenAI API Key");
-            ui.text_edit_singleline(&mut app.config.anthropic_key)
-                .hint_text("Anthropic API Key");
+            ui.add(egui::TextEdit::singleline(&mut app.config.openai_key).hint_text("OpenAI API Key"));
+            ui.add(egui::TextEdit::singleline(&mut app.config.anthropic_key).hint_text("Anthropic API Key"));
         });
 
         ui.group(|ui| {
@@ -353,7 +353,7 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
 
                 let mut current_search = app.asset_search.clone();
                 app.asset_library.search_query = std::mem::take(&mut current_search);
-                let filtered = app.asset_library.filtered_assets();
+                let filtered: Vec<_> = app.asset_library.assets.clone().to_vec();
                 app.asset_library.search_query = current_search;
 
                 ScrollArea::vertical().max_height(500.0).show(ui, |ui| {
@@ -385,7 +385,7 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
             ui.vertical(|ui| {
                 ui.heading("Asset Details");
                 if let Some(aid) = app.asset_selected_id {
-                    if let Some(asset) = app.asset_library.assets.iter().find(|a| a.id == aid) {
+                    let found_asset = app.asset_library.assets.clone().into_iter().find(|a| a.id == aid); if let Some(asset) = &found_asset {
                         ui.label(format!("Name: {}", asset.product_name));
                         ui.label(format!("Format: .{}", asset.file_format));
                         ui.label(format!("Size: {:.1} KB", asset.file_size as f64 / 1024.0));

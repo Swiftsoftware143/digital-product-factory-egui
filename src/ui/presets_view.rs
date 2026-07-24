@@ -35,8 +35,9 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
             
             // Show selected preset details if any
             if let Some(selected_id) = &app.selected_preset_id {
-                if let Some(preset) = app.preset_registry.get(selected_id) {
-                    show_preset_details(app, ui, preset);
+                let preset = app.preset_registry.get(selected_id).cloned();
+                if let Some(preset) = preset {
+                    show_preset_details(app, ui, &preset);
                 }
             }
         });
@@ -56,7 +57,7 @@ fn show_preset_card(app: &mut DpfApp, ui: &mut Ui, preset: &IndustryPreset) {
                 ui.label(RichText::new(&preset.emoji).size(32.0));
                 ui.vertical(|ui| {
                     ui.strong(&preset.name);
-                    ui.label(RichText::new(&preset.description).size(11.0).color(Color32::GRAY).wrap(true));
+                    ui.label(RichText::new(&preset.description).size(11.0).color(Color32::GRAY));
                 });
             });
             
@@ -181,7 +182,7 @@ fn load_preset_into_pipeline(app: &mut DpfApp, preset: &IndustryPreset) {
             created_at: chrono::Utc::now(),
             updated_at: chrono::Utc::now(),
             priority: crate::pipeline::Priority::Medium,
-            tags: vec![preset.id.clone(), stage.name.to_lowercase().replace(" ", "-")],
+            tags: vec![preset.id.clone(), stage.name.to_lowercase().as_str().replace(" ", "-")],
             estimated_value: 0.0,
             actual_value: None,
             notes: format!(

@@ -19,9 +19,10 @@ pub mod mockup_view;
 pub mod publish_view;
 pub mod variants_view;
 pub mod admin_view;
-pub mod variants_view;
+pub mod advert_preview;
+pub mod advert_composer;
+pub mod adverts_view;
 
-pub use create_view::show as create_view;
 
 pub use sidebar::show as sidebar;
 pub use main_content::show as main_content;

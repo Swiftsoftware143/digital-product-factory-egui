@@ -4,8 +4,7 @@
 //! platform spec validation, manual approval toggle.
 //! All checks run locally, no network needed.
 
-use crate::database::Database;
-use crate::publishing::{PlatformFormat, PublishManager};
+use crate::publishing::PlatformFormat;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;

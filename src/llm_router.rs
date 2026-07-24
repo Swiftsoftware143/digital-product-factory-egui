@@ -13,6 +13,7 @@ pub struct LLMRouter {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum LLMProfile {
     Creative,      // GPT-4o for creative writing
     Structured,    // Claude for structured data
@@ -44,6 +45,7 @@ impl LLMProfile {
 }
 
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub enum Provider {
     OpenAI,
     Anthropic,

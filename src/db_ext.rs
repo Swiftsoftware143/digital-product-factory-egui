@@ -1,6 +1,6 @@
 //! Database extension — Analytics, Publishing, QC, and Asset tables
 
-use rusqlite::{Connection, params, Result as SqlResult};
+use rusqlite::{Connection, Result as SqlResult};
 
 /// Initialize all business tables (standalone function)
 pub fn init_business_tables(conn: &Connection) -> SqlResult<()> {

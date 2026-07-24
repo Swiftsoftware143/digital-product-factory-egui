@@ -9,6 +9,7 @@
 //!
 //! Tier: Agency+ (gated)
 
+use image::GenericImageView;
 use egui::*;
 use crate::app::DpfApp;
 use crate::inline_help;

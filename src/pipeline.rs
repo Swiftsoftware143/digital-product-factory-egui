@@ -5,7 +5,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum PipelineStage {
     Idea,       // Just an idea
     Research,   // Market research done
@@ -71,8 +71,9 @@ pub struct ProductIdea {
     pub platform: Vec<String>, // Etsy, Gumroad, etc.
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum Priority {
+    #[default]
     Low,
     Medium,
     High,
@@ -118,7 +119,7 @@ pub enum ViewMode {
     Calendar,
 }
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct NewIdeaDraft {
     pub title: String,
     pub description: String,
@@ -222,6 +223,7 @@ impl Pipeline {
     }
 }
 
+#[allow(dead_code)]
 pub struct PipelineStats {
     pub total: usize,
     pub by_stage: Vec<(PipelineStage, usize)>,

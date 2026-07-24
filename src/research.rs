@@ -6,7 +6,7 @@ use std::sync::Arc;
 use tokio::runtime::Runtime;
 use std::time::Duration;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub struct MarketResearch {
     client: Client,
     runtime: Arc<Runtime>,
@@ -36,6 +36,7 @@ pub struct ProductListing {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct MarketInsight {
     pub avg_price: f64,
     pub price_range: (f64, f64),
@@ -45,6 +46,7 @@ pub struct MarketInsight {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum CompetitionLevel {
     Low,
     Medium,

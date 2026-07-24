@@ -1,8 +1,8 @@
 //! Product creation view
 
 use egui::*;
-use crate::app::{DpfApp, Tab};
-use crate::templates::{TemplateCategory, OutputFormat};
+use crate::app::DpfApp;
+use crate::templates::TemplateCategory;
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {

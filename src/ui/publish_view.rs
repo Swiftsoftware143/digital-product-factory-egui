@@ -3,7 +3,7 @@
 use egui::*;
 use crate::app::DpfApp;
 use crate::inline_help;
-use crate::publishing::{PublishManager, PublishLog, PublishStatus, store_api_key, get_api_key, delete_api_key};
+use crate::publishing::{PublishManager, PublishStatus, store_api_key, delete_api_key};
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {

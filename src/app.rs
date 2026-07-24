@@ -1,5 +1,6 @@
 //! Main application state and UI
 
+use crate::ui::adverts_view::AdvertsManager;
 use egui::*;
 use std::sync::Arc;
 use tokio::runtime::Runtime;
@@ -25,7 +26,6 @@ use crate::{admin::AdminState,
     webhook::WebhookState,
     asset_library::AssetLibrary,
     compliance::{DenylistScanner, AiDisclosureRule, AiToolLicense},
-    product_variants::VariantManager,
     ui::{sidebar, main_content, status_bar, analytics_view, publish_view, settings_dialog, license_dialog},
 };
 
@@ -44,6 +44,7 @@ pub struct DpfApp {
     pub contract_generator: ContractGenerator,
     pub preset_registry: PresetRegistry,
     pub analytics: Analytics,
+    pub adverts_manager: AdvertsManager,
     pub publish_manager: PublishManager,
     pub mockup_compositor: MockupCompositor,
     pub variant_manager: VariantManager,
@@ -54,7 +55,6 @@ pub struct DpfApp {
     pub asset_library: AssetLibrary,
     pub denylist_scanner: DenylistScanner,
     pub disclosure_rules: Vec<AiDisclosureRule>,
-    pub variant_manager: VariantManager,
     // ── UI State ─────────────────────────────────────────────────
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
@@ -97,13 +97,13 @@ pub struct DpfApp {
 pub enum Tab {
     Dashboard, Pipeline, Mockup, Create, Research, Templates,
     Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings,
-    Admin, QC, AssetLibrary, Compliance, Webhooks, Variants,
+    Admin, QC, AssetLibrary, Compliance, Webhooks, Variants, Adverts,
 }
 
 impl DpfApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let mut fonts = egui::FontDefinitions::default();
-        #[cfg(feature = "embed-font")]
+        if false /* cfg(not(feature = embed-font)) */
         {
             fonts.font_data.insert(
                 "inter".to_owned(),
@@ -140,7 +140,6 @@ impl DpfApp {
         let analytics = Analytics::new(&db);
         let publish_manager = PublishManager::new(&db);
         let mockup_compositor = MockupCompositor::new();
-        let variant_manager = VariantManager::new(&db);
         let admin = AdminState::new();
 
         let format_path = std::path::Path::new("platform_formats.json");
@@ -149,7 +148,7 @@ impl DpfApp {
         }
 
         // ── NEW MODULES INIT ─────────────────────────────────────
-        let mut qc_engine = QcEngine::new("dpf_data.db");
+        let qc_engine = QcEngine::new("dpf_data.db");
         let mut asset_library = AssetLibrary::new();
         asset_library.load_from_db(&db);
 
@@ -159,6 +158,7 @@ impl DpfApp {
             AiDisclosureRule::save("ai_disclosure_rules.json");
         }
         let disclosure_rules = AiDisclosureRule::load("ai_disclosure_rules.json");
+        let db_clone = Arc::clone(&db);
 
         Self {
             db, runtime, config,
@@ -169,11 +169,11 @@ impl DpfApp {
             // ── NEW MODULES ──────────────────────────────────────
             qc_engine,
             webhook_state: WebhookState::new(false, 9823),
-            variant_manager: VariantManager::new(&db),
+            variant_manager: VariantManager::new(&db_clone),
             asset_library,
+            adverts_manager: AdvertsManager::new(),
             denylist_scanner: DenylistScanner::new(),
             disclosure_rules,
-            variant_manager,
             // ── UI State ─────────────────────────────────────────
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,

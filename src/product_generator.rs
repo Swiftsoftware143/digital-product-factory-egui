@@ -9,6 +9,7 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct GeneratedProduct {
     pub id: usize,
     pub name: String,
@@ -20,6 +21,7 @@ pub struct GeneratedProduct {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct ProductMetadata {
     pub model_used: String,
     pub tokens_used: u32,
@@ -107,7 +109,8 @@ impl ProductGenerator {
         if let Some(obj) = params.as_object() {
             for (key, value) in obj {
                 let placeholder = format!("{{{}}}", key);
-                let replacement = value.as_str().unwrap_or(&value.to_string());
+                let fallback = value.to_string();
+                let replacement = value.as_str().unwrap_or(&fallback);
                 prompt = prompt.replace(&placeholder, replacement);
             }
         }

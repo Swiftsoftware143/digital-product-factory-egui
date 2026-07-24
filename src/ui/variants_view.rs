@@ -44,10 +44,10 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                 })
                 .and_then(|pid| product_ids.iter().position(|&id| id == pid));
 
-            let mut dropdown_idx = selected_idx.map(|i| format!("{} (ID:{})", app.pipeline.ideas[i].title, app.pipeline.ideas[i].id))
+            let dropdown_idx = selected_idx.map(|i| format!("{} (ID:{})", app.pipeline.ideas[i].title, app.pipeline.ideas[i].id))
                 .unwrap_or_default();
 
-            ComboBox::from_id_salt("product_selector")
+            ComboBox::new("product_selector", "")
                 .selected_text(if dropdown_idx.is_empty() { "Select product..." } else { &dropdown_idx })
                 .width(200.0)
                 .show_ui(ui, |ui| {
@@ -113,7 +113,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
                     .map(|i| i.title.as_str())
                     .unwrap_or("(deleted product)");
 
-                let variants = app.variant_manager.get_variants_for_product(*pid);
+        let variants: Vec<_> = app.variant_manager.get_variants_for_product(*pid).into_iter().cloned().collect();
                 let var_count = variants.len();
 
                 // Product header with collapsible section
@@ -122,14 +122,14 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
 
                 CollapsingHeader::new(header_text)
                     .default_open(true)
-                    .id_salt(("prod_variants", *pid))
+                    .id_source(("prod_variants", *pid))
                     .show(ui, |ui| {
                         ui.indent("variant_list", |ui| {
                             if variants.is_empty() {
                                 ui.label("  No variants. Add one using the button above.");
                             } else {
                                 for variant in variants {
-                                    show_variant_card(app, ui, variant, *pid);
+                                    show_variant_card(app, ui, &variant, *pid);
                                 }
                             }
                         });
@@ -283,11 +283,11 @@ fn show_add_variant_dialog(app: &mut DpfApp, ctx: &Context) {
                     })
                     .and_then(|pid| product_ids.iter().position(|&id| id == pid));
 
-                let mut dropdown_text = selected_idx
+                let dropdown_text = selected_idx
                     .map(|i| format!("{} (ID:{})", app.pipeline.ideas[i].title, app.pipeline.ideas[i].id))
                     .unwrap_or_default();
 
-                ComboBox::from_id_salt("add_var_product")
+                ComboBox::new("add_var_product", "")
                     .selected_text(if dropdown_text.is_empty() { "Select..." } else { &dropdown_text })
                     .width(250.0)
                     .show_ui(ui, |ui| {
@@ -304,13 +304,12 @@ fn show_add_variant_dialog(app: &mut DpfApp, ctx: &Context) {
 
             ui.horizontal(|ui| {
                 ui.label("Name:");
-                ui.text_edit_singleline(&mut app.variant_manager.new_variant_name)
-                    .hint_text("e.g. Daily Planner - PDF");
+                ui.add(egui::TextEdit::singleline(&mut app.variant_manager.new_variant_name).hint_text("e.g. Daily Planner - PDF"));
             });
 
             ui.horizontal(|ui| {
                 ui.label("Format:");
-                ComboBox::from_id_salt("format_selector")
+                ComboBox::new("format_selector", "")
                     .selected_text(&app.variant_manager.new_variant_format)
                     .width(150.0)
                     .show_ui(ui, |ui| {
@@ -326,8 +325,7 @@ fn show_add_variant_dialog(app: &mut DpfApp, ctx: &Context) {
 
             ui.horizontal(|ui| {
                 ui.label("Price:");
-                ui.text_edit_singleline(&mut app.variant_manager.new_variant_price)
-                    .hint_text("9.99");
+                ui.add(egui::TextEdit::singleline(&mut app.variant_manager.new_variant_price).hint_text("9.99"));
             });
 
             ui.separator();
@@ -390,7 +388,9 @@ fn show_version_history_dialog(app: &mut DpfApp, ctx: &Context, variant_id: usiz
         }
     };
 
-    let versions = app.variant_manager.get_versions(variant_id);
+    let version_refs = app.variant_manager.get_versions(variant_id);
+    let versions: Vec<_> = version_refs.into_iter().cloned().collect();
+
     let current_v = variant.current_version;
 
     Window::new(format!("Version History: {}", variant.name))

@@ -1,4 +1,8 @@
 //! Digital Product Factory - Pure Rust Native Desktop App
+#![allow(dead_code)]
+#![allow(unused_variables, unused_imports)]
+#![allow(unused_variables, unused_imports)]
+#![allow(unused_variables, unused_imports)]
 
 mod app;
 mod pipeline;
@@ -25,9 +29,11 @@ pub mod admin;
 pub mod qc;
 pub mod webhook;
 pub mod asset_library;
-pub mod product_variants;
 pub mod compliance;
 
+mod adverts;
+mod advert_generator;
+mod advert_export;
 use eframe::NativeOptions;
 
 fn main() -> eframe::Result<()> {

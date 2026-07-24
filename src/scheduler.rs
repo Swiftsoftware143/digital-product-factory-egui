@@ -1,7 +1,7 @@
 //! Task scheduler for automation - runs tasks at scheduled times
 
 use crate::database::Database;
-use chrono::{DateTime, Duration, Utc};
+use chrono::{DateTime, Duration, Utc, Datelike, Timelike};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::runtime::Runtime;
@@ -81,10 +81,12 @@ impl Scheduler {
     }
     
     pub fn toggle_task(&mut self, id: usize) {
-        if let Some(task) = self.tasks.iter_mut().find(|t| t.id == id) {
-            task.enabled = !task.enabled;
-            if task.enabled {
-                *task = self.calculate_next_run(task.clone());
+        let idx = self.tasks.iter().position(|t| t.id == id);
+        if let Some(idx) = idx {
+            self.tasks[idx].enabled = !self.tasks[idx].enabled;
+            if self.tasks[idx].enabled {
+                let task = self.tasks[idx].clone();
+                self.tasks[idx] = self.calculate_next_run(task);
             }
             self.save_tasks();
         }
