@@ -12,6 +12,7 @@ use crate::adverts::{
     CopyFramework, GenerationConfig,
 };
 use crate::advert_generator::AdvertGenerator;
+use crate::llm_router::LLMRouter;
 use crate::advert_export::AdvertExporter;
 use crate::app::DpfApp;
 
@@ -102,8 +103,14 @@ impl AdvertsManager {
 // ── Main View ─────────────────────────────────────────────────────────
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
+    // Destructure app for split borrows
+    let (mgr, config, runtime) = (
+        &mut app.adverts_manager,
+        &app.config,
+        &app.runtime,
+    );
+
     CentralPanel::default().show(ctx, |ui| {
-        let mgr = &mut app.adverts_manager;
 
         ui.horizontal(|ui| {
             ui.heading("📢 Adverts & Campaign Suite");
@@ -119,7 +126,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
             show_campaign_actions(ui, mgr);
         }
 
-        show_generation_form(ui, mgr);
+        show_generation_form(ui, mgr, config, runtime);
 
         // Saved campaigns list
         if !mgr.campaigns.is_empty() {
@@ -213,7 +220,7 @@ fn show_campaign_actions(ui: &mut Ui, mgr: &mut AdvertsManager) {
 }
 
 /// Show the generation form
-fn show_generation_form(ui: &mut Ui, mgr: &mut AdvertsManager) {
+fn show_generation_form(ui: &mut Ui, mgr: &mut AdvertsManager, app_config: &crate::config::AppConfig, runtime: &std::sync::Arc<tokio::runtime::Runtime>) {
     ui.heading("Generate New Campaign");
     ScrollArea::vertical().max_height(350.0).show(ui, |ui| {
         Frame::group(ui.style()).show(ui, |ui| {
@@ -323,6 +330,20 @@ fn show_generation_form(ui: &mut Ui, mgr: &mut AdvertsManager) {
             // Generate button
             if ui.add_sized([200.0, 36.0], Button::new("🎨 Generate Campaign")).clicked() {
                 let config = mgr.build_config();
+
+                // Build LLM router from app API keys
+                let router = if !app_config.openai_key.is_empty() {
+                    Some(LLMRouter::new(
+                        app_config.openai_key.clone(),
+                        app_config.anthropic_key.clone(),
+                        app_config.google_key.clone(),
+                        app_config.deepseek_key.clone(),
+                        app_config.moonshot_key.clone(),
+                    ))
+                } else {
+                    None
+                };
+
                 let generator = AdvertGenerator::new();
 
                 let campaign = generator.generate_campaign(
@@ -331,9 +352,18 @@ fn show_generation_form(ui: &mut Ui, mgr: &mut AdvertsManager) {
                     if mgr.product_name.is_empty() { "Product" } else { &mgr.product_name },
                     if mgr.target_audience.is_empty() { "General" } else { &mgr.target_audience },
                     if mgr.platform.is_empty() { "facebook" } else { &mgr.platform },
+                    router.as_ref(),
+                    runtime,
                 );
 
-                mgr.campaign = Some(campaign);
+                match campaign {
+                    Ok(c) => {
+                        mgr.campaign = Some(c);
+                    }
+                    Err(e) => {
+                        tracing::error!("Campaign generation failed: {}", e);
+                    }
+                }
                 mgr.selected_advert = None;
                 mgr.selected_preview = None;
             }

@@ -1,25 +1,145 @@
-//! Advert Generator — AI Generation Orchestrator
+//! Advert Generator — AI-Generated via LLM Router
 //!
-//! Produces AI-generated advertising concepts: brand identity expansion,
-//! copy variations (PAS/AIDA/BAB), visual concepts, layout specs, and
-//! conversion scoring. All output is editable by the user after generation.
+//! All ad copy, visual concepts, layout specs, and conversion scores
+//! are produced by the LLM router. Nothing hardcoded.
+//!
+//! The LLM uses a structured system prompt that guarantees JSON output
+//! conforming to the Advert data model. Parsed with serde_json.
 
 use crate::adverts::{
-    Advert, AdvertStatus, AspectRatio, BrandIdentity, Campaign, CampaignStatus,
-    ColorScheme, Concept, CopyFramework, CopyVariation, GenerationConfig,
-    LayoutSpec, ProductPlacement, RatioLayoutSpec, TextPosition, BackgroundStyle,
+    Advert, AdvertStatus, AspectRatio, BackgroundStyle, BrandIdentity,
+    Campaign, CampaignStatus, ColorScheme, CopyFramework, CopyVariation,
+    GenerationConfig, LayoutSpec, ProductPlacement, RatioLayoutSpec,
 };
+use crate::llm_router::{GenerationRequest, LLMProfile, LLMRouter};
 use chrono::Utc;
-use rand::Rng;
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use tokio::runtime::Runtime;
 
-pub struct AdvertGenerator;
+const ADVERTS_SYSTEM_PROMPT: &str = r#"You are the Adverts Module inside Digital Product Factory, an AI-powered desktop application built to generate high-converting advertising creatives, product photography scenes, copy, and multi-format promotional layouts for e-commerce, POD (Print on Demand), and digital products.
+
+## Core Functionality & Objectives
+- Generate advertising assets for 3 aspect ratios: Square (1:1, 1080x1080), Story (9:16, 1080x1920), Landscape (16:9, 1200x628)
+- Create AI product photography descriptions with background scenes (e.g., rustic wood, minimalist platform, neon diner, natural sunlight)
+- Apply proven conversion frameworks: PAS (Problem-Agitate-Solve), AIDA (Attention-Interest-Desire-Action), BAB (Before-After-Bridge)
+- Provide a projected Conversion Score (0-100) for each concept with reasoning
+
+## Input Provided
+- Product name, category, and target audience
+- Brand identity (name, tagline, voice tone, hex colors, font family)
+- Selected aspect ratios and copy frameworks
+- Number of variations to generate
+
+## Output Format
+Return ONLY valid JSON. No markdown, no code fences. The JSON structure must be:
+{
+  "adverts": [
+    {
+      "aspect_ratio": "square_1_1" | "story_9_16" | "landscape_16_9",
+      "headline": "string",
+      "subheadline": "string",
+      "body_copy": "string (multi-line with \n for line breaks)",
+      "call_to_action": "string",
+      "copy_framework": "PAS" | "AIDA" | "BAB",
+      "conversion_score": 0-100,
+      "score_reasoning": "string (why this score, what's working, what could improve)",
+      "visual_concept": {
+        "concept_name": "string",
+        "background_description": "string (detailed scene prompt)",
+        "color_scheme": "Light" | "Dark" | "Vibrant" | "Monochrome" | "Default",
+        "background_style": "Gradient" | "Solid" | "Image" | "Pattern"
+      },
+      "layout_spec": {
+        "dimensions": "1080x1080" | "1080x1920" | "1200x628",
+        "headline_position": "string",
+        "product_scale": "string",
+        "cta_badge": "string",
+        "platform_recommendation": "string"
+      }
+    }
+  ],
+  "brand_identity": {
+    "extracted_tone": "string",
+    "recommended_palette": ["hex1", "hex2", "hex3"],
+    "target_platforms": ["string"]
+  }
+}
+
+## Rules
+- Always output all requested aspect ratios with tailored positioning
+- Maintain brand colors and typography in every layout
+- Prioritize readability, high visual contrast, clear product placement, bold CTAs
+- Conversion score must include reasoning
+- Visual concepts must be unique across variations - no duplicates
+- Use the provided brand voice_tone consistently in all copy"#;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct LlmAdvertEntry {
+    aspect_ratio: String,
+    headline: String,
+    subheadline: String,
+    body_copy: String,
+    call_to_action: String,
+    copy_framework: String,
+    conversion_score: u8,
+    score_reasoning: String,
+    visual_concept: LlmVisualConcept,
+    layout_spec: LlmLayoutSpec,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct LlmVisualConcept {
+    concept_name: String,
+    background_description: String,
+    color_scheme: String,
+    background_style: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct LlmLayoutSpec {
+    dimensions: String,
+    headline_position: String,
+    product_scale: String,
+    cta_badge: String,
+    platform_recommendation: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct LlmBrandIdentity {
+    extracted_tone: String,
+    recommended_palette: Vec<String>,
+    target_platforms: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct LlmAdvertResponse {
+    adverts: Vec<LlmAdvertEntry>,
+    brand_identity: LlmBrandIdentity,
+}
+
+pub struct AdvertGenerator {
+    llm_router: Option<LLMRouter>,
+}
 
 impl AdvertGenerator {
     pub fn new() -> Self {
-        Self
+        Self { llm_router: None }
     }
 
-    /// Generate a full campaign with adverts across multiple aspect ratios
+    pub fn set_api_keys(
+        &mut self,
+        openai: String,
+        anthropic: String,
+        google: String,
+        deepseek: String,
+        moonshot: String,
+    ) {
+        self.llm_router = Some(LLMRouter::new(
+            openai, anthropic, google, deepseek, moonshot,
+        ));
+    }
+
     pub fn generate_campaign(
         &self,
         config: &GenerationConfig,
@@ -27,56 +147,124 @@ impl AdvertGenerator {
         product_name: &str,
         target_audience: &str,
         platform: &str,
-    ) -> Campaign {
-        let mut adverts = Vec::new();
+        router: Option<&LLMRouter>,
+        runtime: &Arc<Runtime>,
+    ) -> Result<Campaign, String> {
+        let llm = router.or(self.llm_router.as_ref())
+            .ok_or("LLM router not configured - set API keys first")?;
 
-        for (i, ar) in config.aspect_ratios.iter().enumerate() {
-            let concepts = self.generate_concepts(config, *ar, config.num_variations);
-            for (j, concept) in concepts.iter().enumerate() {
-                let cv = concept.copy_variations.first()
-                    .cloned()
-                    .unwrap_or_else(|| CopyVariation {
-                        id: 1,
-                        headline: String::new(),
-                        subheadline: String::new(),
-                        body_copy: String::new(),
-                        call_to_action: String::new(),
-                        framework: config.copy_frameworks.first().copied().unwrap_or(CopyFramework::Pas),
-                        conversion_score: 0,
-                    });
+        let frameworks_str = config
+            .copy_frameworks
+            .iter()
+            .map(|f| f.label())
+            .collect::<Vec<_>>()
+            .join(", ");
+        let ratios_str = config
+            .aspect_ratios
+            .iter()
+            .map(|a| a.label())
+            .collect::<Vec<_>>()
+            .join(", ");
 
-                let advert = Advert {
-                    id: i * config.num_variations + j + 1,
-                    campaign_id: 0,
-                    name: format!("{} - {} - V{}", campaign_name, ar.label(), j + 1),
-                    aspect_ratio: *ar,
-                    headline: cv.headline.clone(),
-                    subheadline: cv.subheadline.clone(),
-                    body_copy: cv.body_copy.clone(),
-                    call_to_action: cv.call_to_action.clone(),
-                    visual_description: concept.visual_concept.clone(),
-                    brand_identity: config.brand_identity.clone(),
-                    conversion_score: concept.conversion_score,
-                    copy_framework: cv.framework,
-                    product_placement: ProductPlacement {
-                        product_name: product_name.to_string(),
-                        ..Default::default()
-                    },
-                    layout_spec: LayoutSpec {
-                        color_scheme: concept.color_scheme,
-                        background_style: concept.background_style,
-                        ratio_specs: vec![RatioLayoutSpec::for_ratio(*ar)],
-                        ..Default::default()
-                    },
-                    created_at: Utc::now(),
-                    updated_at: Utc::now(),
-                    status: AdvertStatus::Generated,
-                };
-                adverts.push(advert);
-            }
+        let brand = &config.brand_identity;
+        let user_prompt = format!(
+            "Generate {} advert variation(s) for:\n\
+             Product name: {}\n\
+             Target audience: {}\n\
+             Platform: {}\n\
+             Brand name: {}\n\
+             Tagline: {}\n\
+             Voice tone: {}\n\
+             Colors: primary={}, secondary={}, accent={}\n\
+             Font: {}\n\
+             Copy frameworks requested: {}\n\
+             Aspect ratios requested: {}\n\n\
+             Output exactly {} advert(s), distributing across the requested aspect ratios \
+             and copy frameworks. Each advert must be unique.",
+            config.num_variations,
+            product_name,
+            target_audience,
+            platform,
+            brand.brand_name,
+            brand.tagline,
+            brand.voice_tone,
+            brand.primary_color,
+            brand.secondary_color,
+            brand.accent_color,
+            brand.font_family,
+            frameworks_str,
+            ratios_str,
+            config.num_variations,
+        );
+
+        let request = GenerationRequest {
+            profile: LLMProfile::Creative,
+            prompt: user_prompt,
+            system_prompt: Some(ADVERTS_SYSTEM_PROMPT.to_string()),
+            temperature: 0.8,
+            max_tokens: 4096,
+        };
+
+        let response = runtime
+            .block_on(async { llm.generate(request).await })
+            .map_err(|e| format!("LLM generation failed: {}", e))?;
+
+        let parsed: LlmAdvertResponse = serde_json::from_str(&response.content)
+            .map_err(|e| format!("Failed to parse LLM response as JSON: {}\nRaw: {}", e, response.content))?;
+
+        let mut adverts: Vec<Advert> = Vec::new();
+        for (i, entry) in parsed.adverts.into_iter().enumerate() {
+            let aspect_ratio = parse_aspect_ratio(&entry.aspect_ratio);
+            let framework = parse_framework(&entry.copy_framework);
+            let color_scheme = parse_color_scheme(&entry.visual_concept.color_scheme);
+            let background_style = parse_background_style(&entry.visual_concept.background_style);
+            let ratio_spec = RatioLayoutSpec::for_ratio(aspect_ratio);
+
+            let advert = Advert {
+                id: i + 1,
+                campaign_id: 0,
+                name: format!(
+                    "{} - {} - V{}",
+                    campaign_name,
+                    aspect_ratio.label(),
+                    i + 1
+                ),
+                aspect_ratio,
+                headline: entry.headline,
+                subheadline: entry.subheadline,
+                body_copy: entry.body_copy,
+                call_to_action: entry.call_to_action,
+                visual_description: format!(
+                    "{}\n\nBackground: {}\nConcept: {}",
+                    entry.visual_concept.concept_name,
+                    entry.visual_concept.background_description,
+                    entry.score_reasoning,
+                ),
+                brand_identity: config.brand_identity.clone(),
+                conversion_score: entry.conversion_score,
+                copy_framework: framework,
+                product_placement: ProductPlacement {
+                    product_name: product_name.to_string(),
+                    ..Default::default()
+                },
+                layout_spec: LayoutSpec {
+                    color_scheme,
+                    background_style,
+                    ratio_specs: vec![ratio_spec],
+                    ..Default::default()
+                },
+                created_at: Utc::now(),
+                updated_at: Utc::now(),
+                status: AdvertStatus::Generated,
+            };
+            adverts.push(advert);
         }
 
-        Campaign {
+        if adverts.is_empty() {
+            return Err("LLM returned zero adverts".to_string());
+        }
+
+        Ok(Campaign {
             id: 1,
             name: campaign_name.to_string(),
             description: format!("AI-generated campaign for {}", product_name),
@@ -87,141 +275,45 @@ impl AdvertGenerator {
             created_at: Utc::now(),
             updated_at: Utc::now(),
             status: CampaignStatus::Draft,
-        }
+        })
     }
 
-    /// Generate AI concepts for a single aspect ratio
-    pub fn generate_concepts(
-        &self,
-        config: &GenerationConfig,
-        aspect_ratio: AspectRatio,
-        count: usize,
-    ) -> Vec<Concept> {
-        let mut rng = rand::thread_rng();
-        let mut concepts = Vec::new();
-
-        for i in 0..count {
-            let framework = config.copy_frameworks[i % config.copy_frameworks.len()];
-            let variations = self.generate_copy_variations(&config.brand_identity, framework, 1);
-
-            let concept = Concept {
-                id: i + 1,
-                name: format!("Concept {} ({})", i + 1, aspect_ratio.label()),
-                visual_concept: self.generate_visual_concept(&config.brand_identity, aspect_ratio),
-                copy_variations: variations,
-                color_scheme: match rng.gen_range(0..4) {
-                    0 => ColorScheme::Light,
-                    1 => ColorScheme::Dark,
-                    2 => ColorScheme::Vibrant,
-                    _ => ColorScheme::Default,
-                },
-                background_style: match rng.gen_range(0..3) {
-                    0 => BackgroundStyle::Gradient,
-                    1 => BackgroundStyle::Solid,
-                    _ => BackgroundStyle::Pattern,
-                },
-                conversion_score: rng.gen_range(55..95) as u8,
-                notes: String::new(),
-            };
-            concepts.push(concept);
-        }
-
-        concepts
-    }
-
-    /// Generate copy variations following a copywriting framework
-    fn generate_copy_variations(
-        &self,
-        brand: &BrandIdentity,
-        framework: CopyFramework,
-        _count: usize,
-    ) -> Vec<CopyVariation> {
-        let (headline, subheadline, body, cta) = match framework {
-            CopyFramework::Pas => (
-                format!("Struggling with {}?", &brand.tagline),
-                format!("You're not alone — here's what works"),
-                format!(
-                    "Most {} businesses face this challenge daily. \
-                     The problem isn't effort — it's approach. \
-                     Here's how {} solves it with proven strategies.",
-                    brand.voice_tone.to_lowercase(),
-                    brand.brand_name
-                ),
-                "Get Your Solution Now".to_string(),
-            ),
-            CopyFramework::Aida => (
-                format!("Introducing the {} Way", brand.brand_name),
-                format!("What if {} could be this easy?", brand.tagline),
-                format!(
-                    "Attention: This changes everything for {} professionals.\n\
-                     Interest: Our {} approach delivers results.\n\
-                     Desire: Imagine transforming your workflow overnight.\n\
-                     Action: Start today — risk-free.",
-                    brand.voice_tone.to_lowercase(),
-                    brand.brand_name
-                ),
-                "Start Your Transformation".to_string(),
-            ),
-            CopyFramework::Bab => (
-                format!("Before {}, after was impossible", brand.brand_name),
-                format!("Bridge the gap with proven results"),
-                format!(
-                    "Before: Long hours, manual processes, inconsistent results.\n\
-                     After: Streamlined, automated, professional-grade output.\n\
-                     Bridge: {} provides the tools you need to cross that gap in days, not months.",
-                    brand.brand_name
-                ),
-                "Bridge the Gap Today".to_string(),
-            ),
-        };
-
-        vec![CopyVariation {
-            id: 1,
-            headline,
-            subheadline,
-            body_copy: body,
-            call_to_action: cta,
-            framework,
-            conversion_score: 0,
-        }]
-    }
-
-    /// Generate a visual concept description
-    fn generate_visual_concept(
-        &self,
-        brand: &BrandIdentity,
-        _aspect_ratio: AspectRatio,
-    ) -> String {
-        format!(
-            "Clean, professional layout with {} as the primary color and {} accents. \
-             The {} logo appears in the top-left corner. \
-             Bold typography using {} for headlines. \
-             Product mockup positioned center-right with subtle drop shadow. \
-             Background uses a {} gradient from {} to {}.",
-            brand.primary_color,
-            brand.accent_color,
-            brand.brand_name,
-            brand.font_family,
-            if rand::thread_rng().gen_bool(0.5) { "linear" } else { "radial" },
-            brand.primary_color,
-            brand.secondary_color,
-        )
-    }
-
-    /// Score a single advert for conversion potential (0–100)
     pub fn score_advert(&self, advert: &Advert) -> u8 {
-        let mut rng = rand::thread_rng();
-        let base: u8 = rng.gen_range(60..95);
+        advert.conversion_score
+    }
+}
 
-        // Bonus for well-defined CTA
-        let cta_bonus = if advert.call_to_action.len() > 5 { 5 } else { 0 };
+fn parse_aspect_ratio(s: &str) -> AspectRatio {
+    match s {
+        "story_9_16" | "9:16" | "9:16 Story" | "story" => AspectRatio::Story,
+        "landscape_16_9" | "16:9" | "16:9 Landscape" | "landscape" => AspectRatio::Landscape,
+        _ => AspectRatio::Square,
+    }
+}
 
-        // Bonus for complete brand identity
-        let brand_bonus = if !advert.brand_identity.brand_name.is_empty() { 3 } else { 0 };
+fn parse_framework(s: &str) -> CopyFramework {
+    match s.to_uppercase().as_str() {
+        "AIDA" | "AIDA (ATTENTION-INTEREST-DESIRE-ACTION)" => CopyFramework::Aida,
+        "BAB" | "BAB (BEFORE-AFTER-BRIDGE)" => CopyFramework::Bab,
+        _ => CopyFramework::Pas,
+    }
+}
 
-        // Bonus for visual description quality
-        let visual_bonus = if advert.visual_description.len() > 30 { 2 } else { 0 };
+fn parse_color_scheme(s: &str) -> ColorScheme {
+    match s {
+        "Light" => ColorScheme::Light,
+        "Dark" => ColorScheme::Dark,
+        "Vibrant" => ColorScheme::Vibrant,
+        "Monochrome" => ColorScheme::Monochrome,
+        _ => ColorScheme::Default,
+    }
+}
 
-        (base + cta_bonus + brand_bonus + visual_bonus).min(100)
+fn parse_background_style(s: &str) -> BackgroundStyle {
+    match s {
+        "Solid" => BackgroundStyle::Solid,
+        "Gradient" => BackgroundStyle::Gradient,
+        "Image" => BackgroundStyle::Image,
+        _ => BackgroundStyle::Pattern,
     }
 }
