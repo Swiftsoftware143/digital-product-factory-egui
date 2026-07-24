@@ -45,11 +45,11 @@ impl ProductGenerator {
             runtime,
         }
     }
-    
-    pub fn set_api_keys(&mut self, openai: String, anthropic: String, google: String) {
-        self.llm_router = Some(LLMRouter::new(openai, anthropic, google));
+
+    pub fn set_api_keys(&mut self, openai: String, anthropic: String, google: String, deepseek: String, moonshot: String) {
+        self.llm_router = Some(LLMRouter::new(openai, anthropic, google, deepseek, moonshot));
     }
-    
+
     pub fn generate_blocking(
         &self,
         template_id: &str,
@@ -57,16 +57,16 @@ impl ProductGenerator {
     ) -> Result<GeneratedProduct, String> {
         let router = self.llm_router.as_ref()
             .ok_or("API keys not configured")?;
-        
+
         let template = self.template_registry.get(template_id)
             .ok_or(format!("Template '{}' not found", template_id))?;
-        
+
         // Build prompt from template
         let prompt = self.build_prompt(template, &params)?;
-        
+
         // Auto-select best LLM profile
         let profile = LLMProfile::Creative; // Could auto-select based on template
-        
+
         let request = GenerationRequest {
             profile,
             prompt,
@@ -74,16 +74,16 @@ impl ProductGenerator {
             temperature: 0.7,
             max_tokens: 4000,
         };
-        
+
         let start = std::time::Instant::now();
-        
+
         // Run async generation in blocking context
         let response = self.runtime.block_on(async {
             router.generate(request).await
         })?;
-        
+
         let generation_time = start.elapsed().as_millis() as u64;
-        
+
         let product = GeneratedProduct {
             id: 0, // Will be set by database
             name: self.extract_product_name(&response.content, template),
@@ -98,13 +98,13 @@ impl ProductGenerator {
                 parameters: params,
             },
         };
-        
+
         Ok(product)
     }
-    
+
     fn build_prompt(&self, template: &Template, params: &serde_json::Value) -> Result<String, String> {
         let mut prompt = template.prompt_template.clone();
-        
+
         // Replace parameters in template
         if let Some(obj) = params.as_object() {
             for (key, value) in obj {
@@ -114,7 +114,7 @@ impl ProductGenerator {
                 prompt = prompt.replace(&placeholder, replacement);
             }
         }
-        
+
         // Check for unreplaced placeholders
         if prompt.contains('{') && prompt.contains('}') {
             // Fill with defaults or error
@@ -129,10 +129,10 @@ impl ProductGenerator {
                 }
             }
         }
-        
+
         Ok(prompt)
     }
-    
+
     fn extract_product_name(&self, content: &str, template: &Template) -> String {
         // Try to extract title from first line or use template name
         let first_line = content.lines().next().unwrap_or("");
@@ -144,15 +144,15 @@ impl ProductGenerator {
             format!("{} - {}", template.name, chrono::Local::now().format("%Y-%m-%d"))
         }
     }
-    
+
     pub fn get_template_registry(&self) -> &TemplateRegistry {
         &self.template_registry
     }
-    
+
     pub fn preview_template(&self, template_id: &str, params: &serde_json::Value) -> Result<String, String> {
         let template = self.template_registry.get(template_id)
             .ok_or("Template not found")?;
-        
+
         self.build_prompt(template, params)
     }
 }

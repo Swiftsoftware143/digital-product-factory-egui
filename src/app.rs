@@ -49,13 +49,13 @@ pub struct DpfApp {
     pub mockup_compositor: MockupCompositor,
     pub variant_manager: VariantManager,
     pub admin: AdminState,
-    // ── NEW MODULES ──────────────────────────────────────────────
+    // -- NEW MODULES -------------------------------------------------
     pub qc_engine: QcEngine,
     pub webhook_state: WebhookState,
     pub asset_library: AssetLibrary,
     pub denylist_scanner: DenylistScanner,
     pub disclosure_rules: Vec<AiDisclosureRule>,
-    // ── UI State ─────────────────────────────────────────────────
+    // -- UI State ----------------------------------------------------
     pub current_tab: Tab,
     pub sidebar_expanded: bool,
     pub search_query: String,
@@ -74,20 +74,20 @@ pub struct DpfApp {
     pub active_help_topic: Option<String>,
     pub last_frame_time: std::time::Instant,
     pub fps: f32,
-    // ── QC UI state ──────────────────────────────────────────────
+    // -- QC UI state -------------------------------------------------
     pub qc_target_product_id: Option<usize>,
     pub qc_target_platform: String,
     pub qc_current_result: Option<crate::qc::QcResult>,
     pub qc_manual_approve: bool,
-    // ── Asset Library UI state ───────────────────────────────────
+    // -- Asset Library UI state --------------------------------------
     pub asset_search: String,
     pub asset_selected_id: Option<usize>,
     pub asset_version_notes: String,
-    // ── Compliance UI state ──────────────────────────────────────
+    // -- Compliance UI state -----------------------------------------
     pub compliance_prompt: String,
     pub compliance_scan_result: Vec<String>,
     pub compliance_show_warning: bool,
-    // ── Webhook UI state ─────────────────────────────────────────
+    // -- Webhook UI state --------------------------------------------
     pub webhook_port: String,
     pub webhook_enabled: bool,
     pub webhook_status_message: String,
@@ -127,7 +127,13 @@ impl DpfApp {
 
         let pipeline = Pipeline::load(&db);
         let mut generator = ProductGenerator::new(&db, runtime.clone());
-        generator.set_api_keys(config.openai_key.clone(), config.anthropic_key.clone(), config.google_key.clone());
+        generator.set_api_keys(
+            config.openai_key.clone(),
+            config.anthropic_key.clone(),
+            config.google_key.clone(),
+            config.deepseek_key.clone(),
+            config.moonshot_key.clone(),
+        );
 
         let license_manager = LicenseManager::new(&db);
         let template_registry = TemplateRegistry::new();
@@ -147,7 +153,7 @@ impl DpfApp {
             PublishManager::save_formats_to_file("platform_formats.json");
         }
 
-        // ── NEW MODULES INIT ─────────────────────────────────────
+        // -- NEW MODULES INIT ---------------------------------------
         let qc_engine = QcEngine::new("dpf_data.db");
         let mut asset_library = AssetLibrary::new();
         asset_library.load_from_db(&db);
@@ -166,7 +172,7 @@ impl DpfApp {
             research, scheduler, bundler, exporter, contract_generator,
             preset_registry, analytics, publish_manager, mockup_compositor,
             admin,
-            // ── NEW MODULES ──────────────────────────────────────
+            // -- NEW MODULES ----------------------------------------
             qc_engine,
             webhook_state: WebhookState::new(false, 9823),
             variant_manager: VariantManager::new(&db_clone),
@@ -174,7 +180,7 @@ impl DpfApp {
             adverts_manager: AdvertsManager::new(),
             denylist_scanner: DenylistScanner::new(),
             disclosure_rules,
-            // ── UI State ─────────────────────────────────────────
+            // -- UI State -------------------------------------------
             current_tab: Tab::Dashboard,
             sidebar_expanded: true,
             search_query: String::new(),
@@ -190,20 +196,20 @@ impl DpfApp {
             active_help_topic: None,
             last_frame_time: std::time::Instant::now(),
             fps: 0.0,
-            // ── QC UI state ─────────────────────────────────────
+            // -- QC UI state ---------------------------------------
             qc_target_product_id: None,
             qc_target_platform: "etsy".into(),
             qc_current_result: None,
             qc_manual_approve: false,
-            // ── Asset Library UI state ───────────────────────────
+            // -- Asset Library UI state -----------------------------
             asset_search: String::new(),
-            asset_selected_id: None,
+            asset_selected_id: Option::<usize>::None,
             asset_version_notes: String::new(),
-            // ── Compliance UI state ──────────────────────────────
+            // -- Compliance UI state --------------------------------
             compliance_prompt: String::new(),
             compliance_scan_result: Vec::new(),
             compliance_show_warning: false,
-            // ── Webhook UI state ─────────────────────────────────
+            // -- Webhook UI state -----------------------------------
             webhook_port: "9823".into(),
             webhook_enabled: false,
             webhook_status_message: String::new(),
@@ -248,7 +254,7 @@ impl eframe::App for DpfApp {
                 ui.heading("Digital Product Factory");
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                     ui.label(format!("{:.0} FPS", self.fps));
-                    if ui.button("⚙").clicked() { self.show_settings = true; }
+                    if ui.button("\u{2699}").clicked() { self.show_settings = true; }
                 });
             });
         });

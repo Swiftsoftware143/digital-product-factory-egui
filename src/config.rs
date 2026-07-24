@@ -8,17 +8,19 @@ pub struct AppConfig {
     pub openai_key: String,
     pub anthropic_key: String,
     pub google_key: String,
-    
+    pub deepseek_key: String,
+    pub moonshot_key: String,
+
     // Preferences
     pub auto_save: bool,
     pub dark_mode: bool,
     pub sidebar_expanded: bool,
     pub default_view: String,
-    
+
     // Performance
     pub max_concurrent_tasks: usize,
     pub cache_size_mb: usize,
-    
+
     // Safety limits
     pub max_searches_per_hour: u32,
     pub max_products_per_day: u32,
@@ -31,6 +33,8 @@ impl Default for AppConfig {
             openai_key: String::new(),
             anthropic_key: String::new(),
             google_key: String::new(),
+            deepseek_key: String::new(),
+            moonshot_key: String::new(),
             auto_save: true,
             dark_mode: true,
             sidebar_expanded: true,
