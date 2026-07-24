@@ -158,6 +158,118 @@ All license and feature configurations are **external JSON files** — no rebuil
 
 ---
 
+## Adverts & Campaign Suite — Admin
+
+### Feature Gating
+
+| Feature ID | Min Tier | Module |
+|-----------|----------|--------|
+| adverts | Team | Campaign management + AI generation |
+| advert_export | Team | JSON export |
+
+The Adverts & Campaign Suite is gated at the **Team** tier or higher. Personal tier users will see the tab in the sidebar but get a license upgrade prompt when they try to access it.
+
+### Database Tables
+
+The SQLite database has two new tables for the Adverts module:
+
+**`campaigns` table:**
+- `id` INTEGER PRIMARY KEY AUTOINCREMENT
+- `name` TEXT NOT NULL
+- `description` TEXT
+- `goal` TEXT NOT NULL — lead_generation, brand_awareness, sales_conversion, promo_sale
+- `product_id` INTEGER — references pipeline products
+- `product_name` TEXT
+- `target_audience` TEXT
+- `landing_url` TEXT
+- `platform` TEXT
+- `created_at` TEXT (ISO 8601)
+
+**`adverts` table:**
+- `id` INTEGER PRIMARY KEY AUTOINCREMENT
+- `campaign_id` INTEGER — references campaigns.id
+- `product_id` INTEGER
+- `product_name` TEXT
+- `format` TEXT — square_1_1, story_9_16, landscape_16_9
+- `copy_framework` TEXT — pas, aida, bab, social_proof, benefit_driven
+- `headline` TEXT
+- `subheadline` TEXT
+- `body_text` TEXT
+- `cta_text` TEXT
+- `tagline` TEXT
+- `brand_voice` TEXT
+- `brand_colors` TEXT — JSON array of hex colors
+- `product_scale` REAL — 0.3 to 1.0
+- `product_position` TEXT — center, left, right
+- `product_rotation` REAL — degrees
+- `background_prompt` TEXT
+- `concept_name` TEXT
+- `conversion_score` INTEGER — 0-100
+- `score_reasoning` TEXT
+- `status` TEXT — draft, ready
+- `created_at` TEXT (ISO 8601)
+- `layout_specs_json` TEXT — JSON string of per-ratio LayoutSpec data
+
+### Generation Configuration
+
+The AI generation uses the user's configured LLM provider (OpenAI, Anthropic, Google, DeepSeek, or Moonshot). The generation prompt includes:
+
+1. **Product context** — Name, description, target audience from the campaign
+2. **Copy framework instructions** — Framework-specific structure requirements
+3. **Aspect ratio constraints** — Per-ratio dimension and layout rules
+4. **Brand identity extraction** — Tone analysis from product description
+
+### Layout Spec Architecture
+
+Each advert stores per-ratio layout specifications as JSON:
+
+```json
+{
+  "square_1_1": {
+    "dimensions": "1080x1080",
+    "headline_position": "top-center",
+    "subheadline_position": "below-headline",
+    "cta_position": "bottom-right",
+    "product_scale": 0.6,
+    "background_style": "gradient"
+  },
+  "story_9_16": {
+    "dimensions": "1080x1920",
+    "headline_position": "top-third",
+    "subheadline_position": "below-headline",
+    "cta_position": "bottom-center-swipe",
+    "product_scale": 0.75,
+    "background_style": "gradient"
+  },
+  "landscape_16_9": {
+    "dimensions": "1200x628",
+    "headline_position": "left-half",
+    "subheadline_position": "below-headline",
+    "cta_position": "bottom-right",
+    "product_scale": 0.5,
+    "background_style": "gradient-edge"
+  }
+}
+```
+
+### Troubleshooting
+
+**Generation fails:**
+- Check the user has an LLM API key configured in Settings
+- Verify the API key has credits
+- Check internet connectivity
+- The error is logged in the database for review
+
+**Export produces empty files:**
+- Verify the advert has a status of "draft" or "ready" with copy populated
+- Check disk space in the app data directory
+- Ensure write permissions to the assets/exports/ folder
+
+**Preview rendering looks wrong:**
+- Verify the product exists in the pipeline and has an associated thumbnail
+- Check the LayoutSpec data isn't corrupted (re-generate the concept)
+- Product images use the pipeline product's stored path
+
 ## Key Generation
 
 License keys use a format: \DPF-XXXX-XXXX-XXXX\ where X is alphanumeric. Keys encode the tier and a signature.

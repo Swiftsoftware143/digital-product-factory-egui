@@ -769,79 +769,129 @@ These prevent API overuse and platform bans.
 
 ## Adverts & Campaign Suite
 
-Create advertising creatives across multiple aspect ratios with AI-generated copy, background concepts, and conversion scores.
+Create advertising creatives across multiple aspect ratios with AI-generated copy, background concepts, conversion scores, and per-ratio layout specs. Generate pro-quality ad concepts for social media, display networks, and print — all from within the app.
 
 ### Accessing the Feature
 
-Click **📢 Adverts** in the sidebar under the Business section.
+Click **📢 Adverts** in the sidebar under the Business section. Requires a Pipeline product to exist (ad concepts are generated from your existing products).
 
 ### Key Concepts
 
-- **Campaign** — A grouping of adverts targeting a specific product/audience
-- **Advert** — A single creative in a specific format with copy and visual concept
-- **Aspect Ratio** — Choose from Square (1:1, 1080×1080), Story (9:16, 1080×1920), or Landscape (16:9, 1200×628)
-- **Copy Framework** — Each advert can use PAS (Problem-Agitate-Solution), AIDA (Attention-Interest-Desire-Action), or BAB (Before-After-Bridge)
-- **Conversion Score** — AI-generated score (0-100) predicting creative effectiveness
+- **Campaign** — A grouping of adverts targeting a specific product and audience
+- **Advert** — A single creative in a specific aspect ratio with AI copy and visual concept
+- **Aspect Ratios** — 3 formats supported:
+  - **Square (1:1)** — 1080×1080 px — Instagram feed, Facebook feed
+  - **Story (9:16)** — 1080×1920 px — Instagram Stories, TikTok, Facebook Stories
+  - **Landscape (16:9)** — 1200×628 px — Facebook link ads, Google Display, retargeting
+- **Copy Frameworks** — 5 AI frameworks for ad copy:
+  - **PAS** — Problem → Agitate → Solution
+  - **AIDA** — Attention → Interest → Desire → Action
+  - **BAB** — Before → After → Bridge
+  - **Social Proof** — Testimonials, stats, trust signals
+  - **Benefit-Driven** — Feature → Benefit → Outcome
+- **Conversion Score** — AI-generated score (0-100) predicting creative effectiveness with reasoning
+- **Brand Identity** — Extracted brand voice, recommended color palette, target platforms
+- **Layout Spec** — Per-ratio positioning: headline position, subheadline position, CTA position, product scale percentage, product rotation
 
 ### Creating a Campaign
 
 1. Open the **📢 Adverts** tab
 2. Click **New Campaign**
-3. Enter campaign name, description, product name, and target audience
-4. Select the platform (Facebook, Instagram, Google, Print, etc.)
-5. The campaign is saved to the database automatically
+3. Fill in:
+   - **Campaign Name** — Internal label (e.g., "Q4 Product Launch")
+   - **Description** — Campaign strategy notes
+   - **Goal** — Campaign goal (Lead Generation, Brand Awareness, Sales Conversion, or Promo Sale)
+   - **Product Name** — Select from existing Pipeline products
+   - **Target Audience** — Describe who you're targeting (e.g., "Small business owners aged 25-45")
+   - **Landing URL** — Optional click destination
+   - **Platform** — Facebook, Instagram, Google, TikTok, LinkedIn, Print, or Other
+4. Click **Save Campaign**
+5. The campaign is stored in the local SQLite database
 
-### Generating Ad Concepts
+### Generating Ad Concepts (AI)
 
-1. Select or create a campaign
-2. In the generator section, set your parameters:
-   - Target audience description
-   - Brand identity (voice, colors, industry)
-   - Number of concepts per format
-3. Click **Generate Concepts**
-4. AI generates concepts with:
-   - Product placement at scale with positioning
-   - Copy variations in your chosen framework
-   - Background style and color schemes
-   - Conversion score for each concept
+1. Select a campaign from the campaign list
+2. Click **Generate Concepts**
+3. Configure generation parameters:
+   - **Target Audience** — Refine the audience description
+   - **Brand Identity** — Set brand voice (e.g., "Professional yet friendly"), primary colors, industry
+   - **Number of Concepts** — 1-5 concepts per format
+4. AI generates for each aspect ratio:
+   - **Copy Variations** — Headline, body text, CTA in the selected framework
+   - **Visual Concepts** — 2-3 background concepts with color schemes and prompts
+   - **Conversion Score** — 0-100 with reasoning for the score
+   - **Brand Identity Extraction** — Tone analysis, palette recommendations
+   - **Layout Specs** — Per-ratio positioning data:
+     - Square (1:1): Headline at top-center, CTA at bottom-right, product at 60% scale
+     - Story (9:16): Headline at top-third, CTA at bottom-center-swipe, product at 75% scale
+     - Landscape (16:9): Headline at left-half, CTA at bottom-right, product at 50% scale
 
-### Editing Adverts
+### Editing Adverts (Composer View)
 
-In the **Composer** view, you can modify every aspect:
-- **Copy** — Edit headline, body, CTA, and tagline
-- **Brand Identity** — Adjust brand voice, colors, industry
-- **Product Placement** — Set scale (50-100%), position (center, left, right) with rotation
-- **Layout** — Toggle overlay, shadows, text position
-- Each field is editable after AI generation
+In the **Composer** view, every aspect is editable after AI generation:
+
+- **Copy**: Edit headline, subheadline, body text, CTA button text, and tagline individually
+- **Copy Framework**: Switch between PAS, AIDA, BAB, Social Proof, or Benefit-Driven
+- **Brand Identity**: Adjust brand voice, primary colors (hex codes), secondary palette, industry
+- **Product Placement**: 
+  - Scale: 30-100% slider
+  - Position: Center, Left, Right
+  - Rotation: 0-360 degrees
+- **Layout Toggles**: Overlay on/off, shadow on/off, text position adjustments
+- **Background**: Swap between generated concepts or enter a custom background prompt
+
+Changes are reflected live in the Preview pane.
 
 ### Previewing Adverts
 
-The **Preview** view shows:
-- Aspect ratio canvas with guide lines (safe zone, margins, center)
-- Product mockup rendered at scale
-- Brand colors applied to background
-- Copy overlay in correct positions
-- Conversion score badge in the corner
-- CTA button preview
+The **Preview** view renders a canvas representation of each ad:
+
+- **Aspect Ratio Canvas** — Drawn with guide lines showing safe zone, margins, center crosshairs
+- **Product Mockup** — Product image rendered at configured scale with rotation
+- **Brand Colors** — Background color applied from brand identity palette
+- **Copy Overlay** — Headline and body text displayed at correct positions per LayoutSpec
+- **CTA Button** — Rendered as a badge at the CTA position with brand colors
+- **Conversion Score Badge** — Displayed in a corner with color coding (green 80+, yellow 50-79, red below 50)
+- **Multi-Ratio Tabs** — Switch between Square, Story, and Landscape previews for the same advert concept
 
 ### Exporting
 
 - **JSON Export** — Export advert concepts as structured JSON
-- Each advert exports independently or as a campaign bundle
-- Exports include: copy, layout specs, brand identity, product placement, and conversion score
-- Files are saved to the app data directory
+- Export options:
+  - **Single Advert** — Export just one concept
+  - **Campaign Bundle** — Export all adverts in a campaign
+- Exported data includes: copy text, layout specs per ratio, brand identity, product placement params, conversion score, generation config
+- Files are saved to `{app_data_dir}/assets/exports/`
+- File naming: `{campaign_name}_{product_name}_{ratio}_{timestamp}.json`
+
+### Copy Frameworks Explained
+
+| Framework | Structure | Best For |
+|-----------|-----------|----------|
+| **PAS** | Problem → Agitate → Solution | Pain-point marketing, problem solvers |
+| **AIDA** | Attention → Interest → Desire → Action | Launch campaigns, new products |
+| **BAB** | Before → After → Bridge | Transformation offers, coaching |
+| **Social Proof** | Proof → Pain → Solution → Trust | Established products, testimonial-rich |
+| **Benefit-Driven** | Feature → Benefit → Outcome | Feature-rich products, B2B |
+
+### Aspect Ratio Quick Reference
+
+| Format | Dimensions | Best For | Key Placement |
+|--------|-----------|----------|--------------|
+| Square (1:1) | 1080×1080 | Instagram feed, Facebook feed | Headline top-center, CTA bottom-right |
+| Story (9:16) | 1080×1920 | Instagram Stories, TikTok | Headline top-third, CTA bottom-center |
+| Landscape (16:9) | 1200×628 | Facebook link ads, Google Display | Headline left-half, CTA bottom-right |
 
 ### Tips
 
-- Start with a clear target audience for better AI results
-- Generate 3-5 concepts per campaign, then pick the best
-- Higher conversion scores (80+) indicate strong creative alignment
-- Story (9:16) format works best for mobile-first campaigns
-- Landscape (16:9) is ideal for display networks and retargeting
-- Edit AI-generated copy before exporting for final polish
-
-
----
+- **Target Audience is everything** — Be specific. "Small business owners 25-45" beats "everyone"
+- **Generate 3-5 concepts** — Then pick the best, don't use the first result
+- **Conversion Score 80+** — Strong creative alignment. 60-79 needs tweaking. Below 60 — regenerate
+- **Story format converts best** — Mobile-first campaigns consistently outperform
+- **Landscape for retargeting** — 16:9 is ideal for display networks and Google Ads
+- **Always edit AI copy** — AI generates the raw material, you add the polish
+- **Brand Identity consistency** — Use the same brand colors/voice across all adverts in a campaign
+- **Export first, then use external tools** — JSON export feeds into Canva, Figma, or Photoshop for final pixel-perfect rendering
 
 ## License Management
 
@@ -1209,14 +1259,16 @@ Product Variants are available on all license tiers — Personal, Team, Agency, 
 
 ---
 
-*Version 1.4.1 - Native Rust Edition*
+*Version 1.4.2 - Native Rust Edition*
 *Last Updated: July 2026*
 
 ## Changelog
 
-### v1.4.1
+### v1.4.2
+- Added **Adverts & Campaign Suite** — Multi-format ad generation with AI copy frameworks (PAS, AIDA, BAB, Social Proof, Benefit-Driven), 3 aspect ratios (Square 1080×1080, Story 1080×1920, Landscape 1200×628), per-ratio layout specs, conversion scoring with reasoning, brand identity extraction, visual concept generation, campaign management, JSON export
 - Added **DeepSeek** provider — Logic and Reasoning profiles using deepseek-chat
 - Added **Moonshot** provider — Chinese language profile using moonshot-v1-8k
+- Added per-ratio LayoutSpec struct — headline/subheadline/CTA positioning, product scale/rotation per aspect ratio
 - Expanded API settings with DeepSeek and Moonshot key fields
 - All 5 providers selectable per task via auto-select or manual profile
 

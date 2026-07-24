@@ -29,6 +29,54 @@ use crate::{admin::AdminState,
     ui::{sidebar, main_content, status_bar, analytics_view, publish_view, settings_dialog, license_dialog},
 };
 
+/// State for Logo Generator & Vector Generator modules
+#[derive(Clone)]
+pub struct VectorState {
+    pub brand_name: String,
+    pub tagline: String,
+    pub selected_style: crate::vector_types::LogoStyle,
+    pub palette_input: String,
+    pub icon_description: String,
+    pub favicon_enabled: bool,
+    pub current_logo: Option<crate::vector_types::Logo>,
+    pub saved_logos: Vec<crate::vector_types::Logo>,
+    pub selected_logo_index: Option<usize>,
+
+    pub vector_name: String,
+    pub prompt: String,
+    pub style_input: String,
+    pub selected_category: crate::vector_types::VectorCategory,
+    pub current_vector: Option<crate::vector_types::VectorAsset>,
+    pub saved_vectors: Vec<crate::vector_types::VectorAsset>,
+    pub selected_vector_index: Option<usize>,
+
+    pub error: Option<String>,
+}
+
+impl Default for VectorState {
+    fn default() -> Self {
+        Self {
+            brand_name: String::new(),
+            tagline: String::new(),
+            selected_style: crate::vector_types::LogoStyle::Modern,
+            palette_input: String::new(),
+            icon_description: String::new(),
+            favicon_enabled: false,
+            current_logo: None,
+            saved_logos: Vec::new(),
+            selected_logo_index: None,
+            vector_name: String::new(),
+            prompt: String::new(),
+            style_input: String::new(),
+            selected_category: crate::vector_types::VectorCategory::Icon,
+            current_vector: None,
+            saved_vectors: Vec::new(),
+            selected_vector_index: None,
+            error: None,
+        }
+    }
+}
+
 pub struct DpfApp {
     pub db: Arc<Database>,
     pub runtime: Arc<Runtime>,
@@ -45,6 +93,7 @@ pub struct DpfApp {
     pub preset_registry: PresetRegistry,
     pub analytics: Analytics,
     pub adverts_manager: AdvertsManager,
+    pub vector_state: VectorState,
     pub publish_manager: PublishManager,
     pub mockup_compositor: MockupCompositor,
     pub variant_manager: VariantManager,
@@ -98,6 +147,8 @@ pub enum Tab {
     Dashboard, Pipeline, Mockup, Create, Research, Templates,
     Bundles, Scheduler, Presets, Contract, Analytics, Publish, Settings,
     Admin, QC, AssetLibrary, Compliance, Webhooks, Variants, Adverts,
+    LogoGenerator,
+    VectorGenerator,
 }
 
 impl DpfApp {
@@ -185,6 +236,7 @@ impl DpfApp {
             variant_manager: VariantManager::new(&db_clone),
             asset_library,
             adverts_manager: AdvertsManager::new(),
+            vector_state: VectorState::default(),
             denylist_scanner: DenylistScanner::new(),
             disclosure_rules,
             // -- UI State -------------------------------------------

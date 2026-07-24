@@ -34,6 +34,10 @@ pub mod compliance;
 mod adverts;
 mod advert_generator;
 mod advert_export;
+mod vector_types;
+mod vector_generator;
+mod vector_renderer;
+mod vector_export;
 use eframe::NativeOptions;
 
 fn main() -> eframe::Result<()> {

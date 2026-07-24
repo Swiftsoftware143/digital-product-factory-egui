@@ -22,6 +22,9 @@ pub mod admin_view;
 pub mod advert_preview;
 pub mod advert_composer;
 pub mod adverts_view;
+pub mod logo_view;
+pub mod vector_view;
+pub mod vector_preview;
 
 
 pub use sidebar::show as sidebar;

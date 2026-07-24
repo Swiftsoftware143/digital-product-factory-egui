@@ -176,6 +176,38 @@ impl Database {
         
 
         
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -219,6 +251,38 @@ impl Database {
             "CREATE INDEX IF NOT EXISTS idx_varversions_variant ON variant_versions(variant_id)",
             [],
         )?;
+
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
 
         Ok(())
     }
@@ -287,12 +351,76 @@ impl Database {
                 serde_json::to_string(&idea.platform).unwrap(),
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
     
     pub fn delete_idea(&self, id: usize) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM ideas WHERE id = ?1", params![id])?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
     
@@ -314,6 +442,38 @@ impl Database {
                 license.metadata.clone(),
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
     
@@ -394,6 +554,38 @@ impl Database {
                 task.enabled,
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -447,12 +639,76 @@ impl Database {
                 variant.notes,
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
     pub fn delete_variant(&self, id: usize) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM variants WHERE id = ?1", params![id])?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -497,6 +753,38 @@ impl Database {
                 version.file_size_bytes,
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -528,6 +816,38 @@ impl Database {
     pub fn delete_variant_versions(&self, variant_id: usize) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM variant_versions WHERE variant_id = ?1", params![variant_id])?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -582,12 +902,76 @@ impl Database {
                 record.notes,
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
     pub fn delete_sales_record(&self, id: usize) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM sales_records WHERE id = ?1", params![id])?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
@@ -637,12 +1021,76 @@ impl Database {
                 log.published_at.to_rfc3339(),
             ],
         )?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 
     pub fn delete_publish_log(&self, id: usize) -> SqlResult<()> {
         let conn = self.conn.lock().unwrap();
         conn.execute("DELETE FROM publish_logs WHERE id = ?1", params![id])?;
+        // Logo & Vector Generator tables
+        let logo_sql = r#"CREATE TABLE IF NOT EXISTS logos (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            brand_name TEXT NOT NULL,
+            tagline TEXT DEFAULT '',
+            style TEXT NOT NULL,
+            palette TEXT DEFAULT '[]',
+            icon_svg TEXT DEFAULT '',
+            typography_svg TEXT DEFAULT '',
+            full_svg TEXT DEFAULT '',
+            favicon_enabled INTEGER DEFAULT 0,
+            favicon_package_json TEXT,
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(logo_sql, [])?;
+
+        let vector_sql = r#"CREATE TABLE IF NOT EXISTS vector_assets (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL,
+            prompt TEXT DEFAULT '',
+            svg_content TEXT DEFAULT '',
+            palette TEXT DEFAULT '[]',
+            view_box TEXT DEFAULT '0 0 200 200',
+            export_formats TEXT DEFAULT '[]',
+            status TEXT DEFAULT 'draft',
+            created_at TEXT DEFAULT (datetime('now'))
+        )"#;
+        conn.execute(vector_sql, [])?;
+
         Ok(())
     }
 }

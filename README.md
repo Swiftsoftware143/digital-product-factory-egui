@@ -129,3 +129,5 @@ cargo build --release
 - **User Guide:** \GUIDE.md\
 - **Admin Guide:** \ADMIN_GUIDE.md\
 - **Inline Help:** Press ❓ in the app status bar
+
+*Version 1.4.2 - Native Rust Edition*

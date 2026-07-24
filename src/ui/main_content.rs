@@ -36,6 +36,8 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
         Tab::AssetLibrary => show_asset_library(app, ctx),
         Tab::Webhooks => show_webhooks(app, ctx),
         Tab::Adverts => adverts_view::show(app, ctx),
+        Tab::LogoGenerator => crate::ui::logo_view::show(app, ctx),
+        Tab::VectorGenerator => crate::ui::vector_view::show(app, ctx),
     }
 
     // Help overlay (persistent across tabs)

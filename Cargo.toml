@@ -41,6 +41,12 @@ zip = "0.6"
 # Image handling for product previews
 image = { version = "0.24", default-features = false, features = ["png", "jpeg"] }
 
+# Logo & Vector Generator
+resvg = "0.35"
+usvg = { version = "0.35", features = ["text"] }
+usvg-parser = "0.35"
+ico = "0.3"
+
 # Notifications
 notify-rust = { version = "4.10", optional = true }
 
