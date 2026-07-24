@@ -166,7 +166,8 @@ License keys use a format: \DPF-XXXX-XXXX-XXXX\ where X is alphanumeric. Keys en
 
 Use the \LicenseManager\ to generate keys:
 
-\\\ust
+\\\
+ust
 let key = license_manager.generate_key("team");
 // Returns: "DPF-A3K8-M2P1-X9R5"
 \\\
@@ -183,7 +184,8 @@ When a user enters a license key:
 
 ### Revoking Keys
 
-Add to \evoked_keys.json\:
+Add to \
+evoked_keys.json\:
 
 \\\json
 {
@@ -221,7 +223,8 @@ The admin panel is accessible via **Settings > Admin** when an Enterprise licens
    - \eature_tiers.json\
    - \pricing.json\
    - \platform_formats.json\
-   - \evoked_keys.json\
+   - \
+evoked_keys.json\
 
 2. **Database location:** \$HOME/dpf_data.db\ (SQLite)
 
@@ -229,6 +232,8 @@ The admin panel is accessible via **Settings > Admin** when an Enterprise licens
    - OpenAI API key
    - Anthropic API key
    - Google API key
+   - DeepSeek API key
+   - Moonshot API key
 
 4. **Marketplace API keys (stored in OS keychain):**
    - Etsy API key
@@ -271,10 +276,11 @@ cargo run
 | \eature_tiers.json\ | Feature-to-tier mapping | App directory |
 | \pricing.json\ | Pricing and plan details | App directory |
 | \platform_formats.json\ | Marketplace format rules | App directory |
-| \evoked_keys.json\ | Revoked license keys | App directory |
+| \
+evoked_keys.json\ | Revoked license keys | App directory |
 | \dpf_data.db\ | SQLite database | \$HOME/dpf_data.db\ |
 | \sales_export.csv\ | CSV export output | App directory |
 
 ---
 
-*Version 1.1.0 — Digital Product Factory Admin Guide*
+*Version 1.4.1 — Digital Product Factory Admin Guide*

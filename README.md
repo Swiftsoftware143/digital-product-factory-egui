@@ -116,7 +116,7 @@ dpf/
 
 - Rust 2021 edition
 - SQLite (bundled)
-- API keys (user-provided): OpenAI, Anthropic, and/or Google
+- API keys (user-provided): OpenAI, Anthropic, Google, DeepSeek, and/or Moonshot
 
 ## Build
 

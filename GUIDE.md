@@ -445,9 +445,13 @@ The system automatically selects the best AI model:
 | Task | Model | Provider |
 |------|-------|----------|
 | Creative writing | GPT-4o | OpenAI |
-| Structured data | Claude 3.5 | Anthropic |
-| Technical content | Gemini 1.5 | Google |
+| Structured data | Claude 3.5 Sonnet | Anthropic |
+| Technical content | Gemini 1.5 Pro | Google |
+| Logic & reasoning | DeepSeek Chat | DeepSeek |
+| Chinese content | Moonshot v1 | Moonshot |
 | Quick tasks | GPT-3.5 | OpenAI |
+
+**API keys required:** OpenAI, Anthropic, Google, DeepSeek, Moonshot — configure all in Settings (⚙️).
 
 ### AI Prompt Templates
 
@@ -735,6 +739,14 @@ Select multiple products in pipeline:
 **Google:**
 - Get key: https://makersuite.google.com/app/apikey
 - Models: Gemini 1.5 Pro
+
+**DeepSeek:**
+- Get key: https://platform.deepseek.com/api_keys
+- Models: DeepSeek Chat (logic, reasoning, analysis)
+
+**Moonshot:**
+- Get key: https://platform.moonshot.cn/console/api-keys
+- Models: Moonshot v1 (Chinese content, general)
 
 ### Safety Limits
 
@@ -1197,10 +1209,16 @@ Product Variants are available on all license tiers — Personal, Team, Agency, 
 
 ---
 
-*Version 1.3.0 - Native Rust Edition*
+*Version 1.4.1 - Native Rust Edition*
 *Last Updated: July 2026*
 
 ## Changelog
+
+### v1.4.1
+- Added **DeepSeek** provider — Logic and Reasoning profiles using deepseek-chat
+- Added **Moonshot** provider — Chinese language profile using moonshot-v1-8k
+- Expanded API settings with DeepSeek and Moonshot key fields
+- All 5 providers selectable per task via auto-select or manual profile
 
 ### v1.3.0
 - Added **Product Variants & Versioning** — multiple variants per product with full version history and rollback
