@@ -10,9 +10,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AspectRatio {
-    Square,    // 1:1   — 1080x1080
-    Story,     // 9:16  — 1080x1920
-    Landscape, // 16:9  — 1200x628
+    Square,            // 1:1   — 1080x1080
+    Story,             // 9:16  — 1080x1920
+    Landscape,         // 16:9  — 1200x628
+    Banner,            // 728x90
+    MediumRectangle,   // 300x250
+    Skyscraper,        // 160x600
+    PodShape,          // Custom POD placement (hexagon, circle badge, etc.)
 }
 
 impl AspectRatio {
@@ -21,6 +25,10 @@ impl AspectRatio {
             AspectRatio::Square => (1080, 1080),
             AspectRatio::Story => (1080, 1920),
             AspectRatio::Landscape => (1200, 628),
+            AspectRatio::Banner => (728, 90),
+            AspectRatio::MediumRectangle => (300, 250),
+            AspectRatio::Skyscraper => (160, 600),
+            AspectRatio::PodShape => (1080, 1080),
         }
     }
 
@@ -29,11 +37,23 @@ impl AspectRatio {
             AspectRatio::Square => "1:1 Square",
             AspectRatio::Story => "9:16 Story",
             AspectRatio::Landscape => "16:9 Landscape",
+            AspectRatio::Banner => "728x90 Banner",
+            AspectRatio::MediumRectangle => "300x250 Medium Rectangle",
+            AspectRatio::Skyscraper => "160x600 Skyscraper",
+            AspectRatio::PodShape => "POD Custom Shape",
         }
     }
 
     pub fn all() -> Vec<AspectRatio> {
-        vec![AspectRatio::Square, AspectRatio::Story, AspectRatio::Landscape]
+        vec![
+            AspectRatio::Square,
+            AspectRatio::Story,
+            AspectRatio::Landscape,
+            AspectRatio::Banner,
+            AspectRatio::MediumRectangle,
+            AspectRatio::Skyscraper,
+            AspectRatio::PodShape,
+        ]
     }
 }
 
@@ -246,6 +266,46 @@ impl RatioLayoutSpec {
                 product_scale: "50% right-half".into(),
                 product_position: "right-half".into(),
                 layout_description: "Widescreen layout: headline and copy on left half, product mockup on right half. Optimized for Facebook Link Ads, website banners, and YouTube thumbnails.".into(),
+            },
+            AspectRatio::Banner => Self {
+                dimensions: "728x90".into(),
+                headline_position: "left".into(),
+                subheadline_position: "left-inline".into(),
+                cta_position: "right".into(),
+                cta_badge: "right".into(),
+                product_scale: "40% right".into(),
+                product_position: "right".into(),
+                layout_description: "Wide horizontal banner: headline and CTA on the left, compact product thumbnail on the right. Optimized for website headers and display ad networks.".into(),
+            },
+            AspectRatio::MediumRectangle => Self {
+                dimensions: "300x250".into(),
+                headline_position: "top".into(),
+                subheadline_position: "middle".into(),
+                cta_position: "bottom".into(),
+                cta_badge: "bottom".into(),
+                product_scale: "50% center".into(),
+                product_position: "center".into(),
+                layout_description: "Compact square-adjacent format: headline at top, product centered, CTA strip at bottom. Optimized for in-content display ads and Google Display Network.".into(),
+            },
+            AspectRatio::Skyscraper => Self {
+                dimensions: "160x600".into(),
+                headline_position: "top".into(),
+                subheadline_position: "upper-middle".into(),
+                cta_position: "bottom".into(),
+                cta_badge: "bottom".into(),
+                product_scale: "45% middle".into(),
+                product_position: "middle".into(),
+                layout_description: "Tall vertical skyscraper: headline stacked at top, product in middle, CTA at bottom. Optimized for sidebar display ads.".into(),
+            },
+            AspectRatio::PodShape => Self {
+                dimensions: "1080x1080".into(),
+                headline_position: "top".into(),
+                subheadline_position: "below-headline".into(),
+                cta_position: "bottom".into(),
+                cta_badge: "bottom".into(),
+                product_scale: "70% center".into(),
+                product_position: "center".into(),
+                layout_description: "Custom POD shape (hexagon, circle badge, transparent cutout). Product isolated on transparent or shaped background. Optimized for print-on-demand marketplaces and mockups.".into(),
             },
         }
     }

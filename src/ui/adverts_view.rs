@@ -53,7 +53,7 @@ pub struct AdvertsManager {
 impl AdvertsManager {
     pub fn new() -> Self {
         Self {
-            selected_aspect_ratios: vec![true, false, true],
+            selected_aspect_ratios: vec![true, false, true, false, false, false, false],
             selected_frameworks: vec![true, true, false],
             num_variations: 2,
             export_path: "exports/".to_string(),
@@ -75,7 +75,7 @@ impl AdvertsManager {
         };
 
         let mut aspect_ratios = Vec::new();
-        let ratio_options = [AspectRatio::Square, AspectRatio::Story, AspectRatio::Landscape];
+        let ratio_options = AspectRatio::all();
         for (i, &ar) in ratio_options.iter().enumerate() {
             if i < self.selected_aspect_ratios.len() && self.selected_aspect_ratios[i] {
                 aspect_ratios.push(ar);
@@ -290,7 +290,7 @@ fn show_generation_form(ui: &mut Ui, mgr: &mut AdvertsManager, app_config: &crat
             // Aspect ratios
             ui.label("Aspect Ratios:");
             ui.horizontal(|ui| {
-                let labels = ["1:1 Square", "9:16 Story", "16:9 Landscape"];
+                let labels = ["1:1 Square", "9:16 Story", "16:9 Landscape", "728x90 Banner", "300x250 Medium Rect", "160x600 Skyscraper", "POD Custom Shape"];
                 for (i, label) in labels.iter().enumerate() {
                     let mut checked = mgr.selected_aspect_ratios.get(i).copied().unwrap_or(false);
                     if ui.checkbox(&mut checked, *label).changed() {

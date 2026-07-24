@@ -20,7 +20,7 @@ use tokio::runtime::Runtime;
 const ADVERTS_SYSTEM_PROMPT: &str = r#"You are the Adverts Module inside Digital Product Factory, an AI-powered desktop application built to generate high-converting advertising creatives, product photography scenes, copy, and multi-format promotional layouts for e-commerce, POD (Print on Demand), and digital products.
 
 ## Core Functionality & Objectives
-- Generate advertising assets for 3 aspect ratios: Square (1:1, 1080x1080), Story (9:16, 1080x1920), Landscape (16:9, 1200x628)
+- Generate advertising assets for 7 formats: Square (1:1, 1080x1080), Story (9:16, 1080x1920), Landscape (16:9, 1200x628), Banner (728x90), Medium Rectangle (300x250), Skyscraper (160x600), and POD Custom Shape (hexagon, circle badge, transparent cutout).
 - Create AI product photography descriptions with background scenes (e.g., rustic wood, minimalist platform, neon diner, natural sunlight)
 - Apply proven conversion frameworks: PAS (Problem-Agitate-Solve), AIDA (Attention-Interest-Desire-Action), BAB (Before-After-Bridge)
 - Provide a projected Conversion Score (0-100) for each concept with reasoning
@@ -36,7 +36,7 @@ Return ONLY valid JSON. No markdown, no code fences. The JSON structure must be:
 {
   "adverts": [
     {
-      "aspect_ratio": "square_1_1" | "story_9_16" | "landscape_16_9",
+      "aspect_ratio": "square_1_1" | "story_9_16" | "landscape_16_9" | "banner" | "medium_rectangle" | "skyscraper" | "pod_shape",
       "headline": "string",
       "subheadline": "string",
       "body_copy": "string (multi-line with \n for line breaks)",
@@ -287,6 +287,10 @@ fn parse_aspect_ratio(s: &str) -> AspectRatio {
     match s {
         "story_9_16" | "9:16" | "9:16 Story" | "story" => AspectRatio::Story,
         "landscape_16_9" | "16:9" | "16:9 Landscape" | "landscape" => AspectRatio::Landscape,
+        "banner" | "728x90" | "728x90 Banner" => AspectRatio::Banner,
+        "medium_rectangle" | "300x250" | "300x250 Medium Rectangle" => AspectRatio::MediumRectangle,
+        "skyscraper" | "160x600" | "160x600 Skyscraper" => AspectRatio::Skyscraper,
+        "pod_shape" | "POD Custom Shape" => AspectRatio::PodShape,
         _ => AspectRatio::Square,
     }
 }
