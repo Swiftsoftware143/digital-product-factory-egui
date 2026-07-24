@@ -156,6 +156,7 @@ pub struct LayoutSpec {
     pub cta_position: TextPosition,
     pub background_style: BackgroundStyle,
     pub color_scheme: ColorScheme,
+    pub ratio_specs: Vec<RatioLayoutSpec>,
 }
 
 impl Default for LayoutSpec {
@@ -166,6 +167,7 @@ impl Default for LayoutSpec {
             cta_position: TextPosition::Bottom,
             background_style: BackgroundStyle::Gradient,
             color_scheme: ColorScheme::Default,
+            ratio_specs: vec![],
         }
     }
 }
@@ -195,6 +197,58 @@ pub enum ColorScheme {
     Dark,
     Vibrant,
     Monochrome,
+}
+
+// ── Ratio Layout Spec ───────────────────────────────────────────────
+
+/// Per-ratio layout configuration with platform-specific positioning
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RatioLayoutSpec {
+    pub dimensions: String,
+    pub headline_position: String,
+    pub subheadline_position: String,
+    pub cta_position: String,
+    pub cta_badge: String,
+    pub product_scale: String,
+    pub product_position: String,
+    pub layout_description: String,
+}
+
+impl RatioLayoutSpec {
+    pub fn for_ratio(ratio: AspectRatio) -> Self {
+        match ratio {
+            AspectRatio::Square => Self {
+                dimensions: "1080x1080".into(),
+                headline_position: "top-center".into(),
+                subheadline_position: "center".into(),
+                cta_position: "bottom-right".into(),
+                cta_badge: "bottom-right".into(),
+                product_scale: "60%".into(),
+                product_position: "center".into(),
+                layout_description: "Balanced square layout with centered product, headline at top, CTA badge at bottom-right. Optimized for Instagram Feed and Facebook Feed.".into(),
+            },
+            AspectRatio::Story => Self {
+                dimensions: "1080x1920".into(),
+                headline_position: "top-third".into(),
+                subheadline_position: "middle".into(),
+                cta_position: "bottom-center-swipe".into(),
+                cta_badge: "bottom-center-swipe".into(),
+                product_scale: "75%".into(),
+                product_position: "center-upper".into(),
+                layout_description: "Full-screen vertical layout optimized for mobile: product occupies upper 75%, headline at top-third, swipe-CTA at bottom. Designed for TikTok, IG Reels, and Stories.".into(),
+            },
+            AspectRatio::Landscape => Self {
+                dimensions: "1200x628".into(),
+                headline_position: "left-half".into(),
+                subheadline_position: "left-below-headline".into(),
+                cta_position: "bottom-left".into(),
+                cta_badge: "bottom-left".into(),
+                product_scale: "50% right-half".into(),
+                product_position: "right-half".into(),
+                layout_description: "Widescreen layout: headline and copy on left half, product mockup on right half. Optimized for Facebook Link Ads, website banners, and YouTube thumbnails.".into(),
+            },
+        }
+    }
 }
 
 // ── Copy Variation ────────────────────────────────────────────────────

@@ -7,7 +7,7 @@
 use crate::adverts::{
     Advert, AdvertStatus, AspectRatio, BrandIdentity, Campaign, CampaignStatus,
     ColorScheme, Concept, CopyFramework, CopyVariation, GenerationConfig,
-    LayoutSpec, ProductPlacement, TextPosition, BackgroundStyle,
+    LayoutSpec, ProductPlacement, RatioLayoutSpec, TextPosition, BackgroundStyle,
 };
 use chrono::Utc;
 use rand::Rng;
@@ -65,6 +65,7 @@ impl AdvertGenerator {
                     layout_spec: LayoutSpec {
                         color_scheme: concept.color_scheme,
                         background_style: concept.background_style,
+                        ratio_specs: vec![RatioLayoutSpec::for_ratio(*ar)],
                         ..Default::default()
                     },
                     created_at: Utc::now(),
