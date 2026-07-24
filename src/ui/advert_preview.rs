@@ -203,7 +203,7 @@ fn render_preview(ui: &mut Ui, advert: &Advert) {
             painter.text(
                 score_rect.center(),
                 Align2::CENTER_CENTER,
-                &format!("Score: {}/100", advert.conversion_score),
+                format!("Score: {}/100", advert.conversion_score),
                 FontId::proportional(10.0),
                 score_color,
             );
@@ -212,7 +212,7 @@ fn render_preview(ui: &mut Ui, advert: &Advert) {
             painter.text(
                 rect.left_bottom() + vec2(4.0, -4.0),
                 Align2::LEFT_BOTTOM,
-                &format!("{} | {}x{}", advert.aspect_ratio.label(), width, height),
+                format!("{} | {}x{}", advert.aspect_ratio.label(), width, height),
                 FontId::proportional(9.0),
                 Color32::from_gray(120),
             );

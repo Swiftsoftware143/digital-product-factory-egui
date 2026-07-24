@@ -23,7 +23,7 @@ pub fn render_to_image(svg_data: &str, scale: f32) -> Result<DynamicImage, Strin
 
     let render_tree = Tree::from_usvg(&tree);
     render_tree.render(
-        resvg::tiny_skia::Transform::from_scale(scale as f32, scale as f32),
+        resvg::tiny_skia::Transform::from_scale(scale, scale),
         &mut pixmap.as_mut(),
     );
 

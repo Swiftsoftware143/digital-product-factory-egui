@@ -26,6 +26,12 @@ pub struct AdminState {
     pub active_section: AdminSection,
 }
 
+impl Default for AdminState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AdminState {
     /// Create a new AdminState, loading config files from disk
     pub fn new() -> Self {

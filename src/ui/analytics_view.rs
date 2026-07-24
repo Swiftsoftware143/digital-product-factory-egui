@@ -89,7 +89,7 @@ pub fn show(app: &mut DpfApp, ctx: &Context) {
             for bar in &plat_bars {
                 ui.horizontal(|ui| {
                     ui.set_min_width(80.0);
-                    ui.label(format!("{}", bar.platform));
+                    ui.label(bar.platform.to_string());
                     ui.set_min_width(50.0);
                     ui.label(RichText::new(format!("${:.2}", bar.revenue)).size(12.0).strong());
                     let pct = (bar.percentage / 100.0) as f32;
@@ -277,7 +277,7 @@ pub fn show_add_sale_dialog(app: &mut DpfApp, ctx: &Context) {
                         product_id: 0,
                         product_name: app.new_sale.product_name.clone(),
                         platform: app.new_sale.platform.clone(),
-                        units_sold: app.new_sale.units_sold as u32,
+                        units_sold: app.new_sale.units_sold,
                         revenue: app.new_sale.revenue,
                         fee: app.new_sale.fee,
                         net_revenue: app.new_sale.revenue - app.new_sale.fee,

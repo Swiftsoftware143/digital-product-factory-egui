@@ -31,7 +31,9 @@ pub struct Variant {
 
 /// Status of a variant
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum VariantStatus {
+#[default]
     Draft,       // Being created, not yet ready
     Active,      // Live / ready
     Deprecated,  // Old, superseded by another variant

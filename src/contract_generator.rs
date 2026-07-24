@@ -64,6 +64,7 @@ pub struct ContractTemplate {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ContractCategory {
     Freelance,
     NDA,

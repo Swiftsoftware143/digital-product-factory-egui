@@ -1,9 +1,8 @@
 //! Digital Product Factory - Pure Rust Native Desktop App
 #![allow(dead_code)]
 #![allow(unused_variables, unused_imports)]
-#![allow(unused_variables, unused_imports)]
-#![allow(unused_variables, unused_imports)]
 
+#![allow(clippy::too_many_arguments)]
 mod app;
 mod pipeline;
 mod product_generator;

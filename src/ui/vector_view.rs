@@ -95,13 +95,12 @@ pub fn show(app: &mut DpfApp, ctx: &egui::Context) {
                     }
                 }
 
-                if state.current_vector.is_some() {
-                    if ui.button("💾 Save").clicked() {
+                if state.current_vector.is_some()
+                    && ui.button("💾 Save").clicked() {
                         if let Some(asset) = state.current_vector.clone() {
                             state.saved_vectors.push(asset);
                         }
                     }
-                }
 
                 if let Some(ref err) = state.error {
                     ui.colored_label(Color32::RED, err);

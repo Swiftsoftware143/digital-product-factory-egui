@@ -101,13 +101,12 @@ pub fn show(app: &mut DpfApp, ctx: &egui::Context) {
 
                 ui.checkbox(&mut state.favicon_enabled, "Auto-generate Favicon");
 
-                if state.current_logo.is_some() {
-                    if ui.button("💾 Save Logo").clicked() {
+                if state.current_logo.is_some()
+                    && ui.button("💾 Save Logo").clicked() {
                         if let Some(logo) = state.current_logo.clone() {
                             state.saved_logos.push(logo);
                         }
                     }
-                }
 
                 if let Some(ref err) = state.error {
                     ui.colored_label(Color32::RED, err);

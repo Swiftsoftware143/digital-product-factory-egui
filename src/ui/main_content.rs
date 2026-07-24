@@ -362,7 +362,7 @@ fn show_asset_library(app: &mut DpfApp, ctx: &Context) {
                     for asset in &filtered {
                         Frame::group(ui.style()).show(ui, |ui| {
                             ui.horizontal(|ui| {
-                                ui.label(format!("{}", asset.product_name));
+                                ui.label(asset.product_name.to_string());
                                 ui.label(format!("[{}]", asset.file_format));
                                 if ui.small_button("Select").clicked() {
                                     app.asset_selected_id = Some(asset.id);

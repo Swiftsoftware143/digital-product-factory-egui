@@ -51,6 +51,12 @@ pub struct AssetLibrary {
     pub dirty: bool,
 }
 
+impl Default for AssetLibrary {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AssetLibrary {
     pub fn new() -> Self {
         Self {

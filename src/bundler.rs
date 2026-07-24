@@ -114,7 +114,7 @@ impl Bundler {
                     let premium = self.create_bundle(
                         "Premium Collection",
                         "Our best products at one great price",
-                        &sorted[..5].to_vec(),
+                        &sorted[..5],
                         25,
                     )?;
                     bundles.push(premium);
@@ -126,7 +126,7 @@ impl Bundler {
                     let starter = self.create_bundle(
                         "Starter Pack",
                         "Perfect for getting started",
-                        &remaining[..remaining.len().min(5)].to_vec(),
+                        &remaining[..remaining.len().min(5)],
                         30,
                     )?;
                     bundles.push(starter);
@@ -136,9 +136,9 @@ impl Bundler {
                 // Create seasonal bundles based on current month
                 let month = chrono::Local::now().month();
                 let (season, theme) = match month {
-                    1 | 2 | 3 => ("Winter", "cozy"),
-                    4 | 5 | 6 => ("Spring", "fresh start"),
-                    7 | 8 | 9 => ("Summer", "productivity"),
+                    1..=3 => ("Winter", "cozy"),
+                    4..=6 => ("Spring", "fresh start"),
+                    7..=9 => ("Summer", "productivity"),
                     _ => ("Fall", "back to routine"),
                 };
                 
@@ -146,7 +146,7 @@ impl Bundler {
                     let seasonal = self.create_bundle(
                         &format!("{} Collection", season),
                         &format!("{} themed digital products", theme),
-                        &products[..products.len().min(6)].to_vec(),
+                        &products[..products.len().min(6)],
                         20,
                     )?;
                     bundles.push(seasonal);

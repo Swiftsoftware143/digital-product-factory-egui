@@ -89,7 +89,7 @@ impl ProductGenerator {
             name: self.extract_product_name(&response.content, template),
             template_id: template_id.to_string(),
             content: response.content,
-            format: template.output_format.clone(),
+            format: template.output_format,
             created_at: Utc::now(),
             metadata: ProductMetadata {
                 model_used: response.model,
@@ -137,9 +137,9 @@ impl ProductGenerator {
         // Try to extract title from first line or use template name
         let first_line = content.lines().next().unwrap_or("");
         if first_line.starts_with("# ") {
-            first_line[2..].trim().to_string()
+            first_line.strip_prefix("# ").unwrap_or("").trim().to_string()
         } else if first_line.starts_with("Title:") {
-            first_line[6..].trim().to_string()
+            first_line.strip_prefix("Title:").unwrap_or("").trim().to_string()
         } else {
             format!("{} - {}", template.name, chrono::Local::now().format("%Y-%m-%d"))
         }

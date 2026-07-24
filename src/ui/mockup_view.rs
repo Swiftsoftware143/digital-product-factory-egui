@@ -240,7 +240,7 @@ fn export_composite(app: &mut DpfApp, format: &str) {
                 let ext = if format == "png" { "png" } else { "jpg" };
                 let default_name = format!("mockup_output.{}", ext);
                 if let Some(path) = rfd::FileDialog::new()
-                    .add_filter(&format!("Image (*.{})", ext), &[ext])
+                    .add_filter(format!("Image (*.{})", ext), &[ext])
                     .set_file_name(&default_name)
                     .save_file()
                 {

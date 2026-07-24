@@ -125,7 +125,7 @@ impl Scheduler {
             Schedule::Once(datetime) => *datetime,
             Schedule::Daily { hour, minute } => {
                 let next = now.date_naive()
-                    .and_hms_opt(*hour as u32, *minute as u32, 0)
+                    .and_hms_opt(*hour, *minute, 0)
                     .unwrap()
                     .and_local_timezone(Utc)
                     .unwrap();
@@ -144,7 +144,7 @@ impl Scheduler {
                 
                 let next = (now + Duration::days(days_ahead as i64))
                     .date_naive()
-                    .and_hms_opt(*hour as u32, *minute as u32, 0)
+                    .and_hms_opt(*hour, *minute, 0)
                     .unwrap()
                     .and_local_timezone(Utc)
                     .unwrap();
@@ -161,7 +161,8 @@ impl Scheduler {
             Schedule::Smart => {
                 // Next business hours slot (8-11pm or 2-4pm optimal for Pinterest)
                 let hour = now.hour();
-                let next = if hour < 14 {
+                
+                if hour < 14 {
                     // Schedule for 2 PM today
                     now.date_naive().and_hms_opt(14, 0, 0).unwrap().and_local_timezone(Utc).unwrap()
                 } else if hour < 20 {
@@ -170,8 +171,7 @@ impl Scheduler {
                 } else {
                     // Schedule for 2 PM tomorrow
                     (now + Duration::days(1)).date_naive().and_hms_opt(14, 0, 0).unwrap().and_local_timezone(Utc).unwrap()
-                };
-                next
+                }
             },
         });
         

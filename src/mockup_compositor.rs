@@ -58,6 +58,12 @@ pub struct MockupCompositor {
     pub has_valid_license: bool,
 }
 
+impl Default for MockupCompositor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MockupCompositor {
     pub fn new() -> Self {
         let templates = Self::discover_templates();
@@ -79,28 +85,26 @@ impl MockupCompositor {
         let mut templates = Vec::new();
         let mockup_dir = Path::new("mockups");
         if mockup_dir.exists() && mockup_dir.is_dir() {
-            for entry in std::fs::read_dir(mockup_dir).ok().into_iter().flatten() {
-                if let Ok(entry) = entry {
-                    let path = entry.path();
-                    let name = path.file_stem()
-                        .and_then(|s| s.to_str())
-                        .unwrap_or("template")
-                        .to_string();
-                    if let Ok(img) = image::open(&path) {
-                        templates.push(SceneTemplate {
-                            name,
-                            path: path.to_string_lossy().to_string(),
-                            preview: Some(img),
-                            guides: vec![
-                                GuideRegion {
-                                    x: 0, y: 0,
-                                    width: 100, height: 100,
-                                    label: "Default".into(),
-                                    rotation_degrees: 0.0,
-                                }
-                            ],
-                        });
-                    }
+            for entry in std::fs::read_dir(mockup_dir).ok().into_iter().flatten().flatten() {
+                let path = entry.path();
+                let name = path.file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("template")
+                    .to_string();
+                if let Ok(img) = image::open(&path) {
+                    templates.push(SceneTemplate {
+                        name,
+                        path: path.to_string_lossy().to_string(),
+                        preview: Some(img),
+                        guides: vec![
+                            GuideRegion {
+                                x: 0, y: 0,
+                                width: 100, height: 100,
+                                label: "Default".into(),
+                                rotation_degrees: 0.0,
+                            }
+                        ],
+                    });
                 }
             }
         }

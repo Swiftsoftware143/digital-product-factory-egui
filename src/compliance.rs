@@ -88,6 +88,12 @@ pub struct DenylistScanner {
     pub custom_terms: Vec<String>,
 }
 
+impl Default for DenylistScanner {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DenylistScanner {
     pub fn new() -> Self {
         Self {

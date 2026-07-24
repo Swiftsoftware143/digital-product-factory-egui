@@ -14,11 +14,6 @@ const FORMAT_OPTIONS: &[&str] = &[
     "txt", "html", "markdown", "json", "csv",
 ];
 
-impl Default for crate::product_variants::VariantStatus {
-    fn default() -> Self {
-        VariantStatus::Draft
-    }
-}
 
 pub fn show(app: &mut DpfApp, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
@@ -446,13 +441,12 @@ fn show_version_history_dialog(app: &mut DpfApp, ctx: &Context, variant_id: usiz
                                         }
 
                                         // Rollback (only if not current)
-                                        if !is_current {
-                                            if ui.button("↩ Restore").on_hover_text("Rollback to this version").clicked() {
+                                        if !is_current
+                                            && ui.button("↩ Restore").on_hover_text("Rollback to this version").clicked() {
                                                 app.variant_manager.rollback_to_version(
                                                     &app.db, variant_id, version.version_number
                                                 );
                                             }
-                                        }
                                     });
                                 });
 
@@ -544,12 +538,11 @@ fn show_view_version_dialog(app: &mut DpfApp, ctx: &Context, variant_id: usize, 
                     .map(|v| v.current_version)
                     .unwrap_or(0);
 
-                if version_number != current_v {
-                    if ui.button("↩ Restore This Version").clicked() {
+                if version_number != current_v
+                    && ui.button("↩ Restore This Version").clicked() {
                         app.variant_manager.rollback_to_version(&app.db, variant_id, version_number);
                         app.variant_manager.show_view_version = None;
                     }
-                }
 
                 if ui.button("Close").clicked() {
                     app.variant_manager.show_view_version = None;
