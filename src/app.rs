@@ -154,16 +154,7 @@ pub enum Tab {
 impl DpfApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let mut fonts = egui::FontDefinitions::default();
-        if false /* cfg(not(feature = embed-font)) */
-        {
-            fonts.font_data.insert(
-                "inter".to_owned(),
-            );
-            fonts.families
-                .entry(egui::FontFamily::Proportional)
-                .or_default()
-                .insert(0, "inter".to_owned());
-        }
+        // Using default egui fonts (custom font embedding disabled)
         cc.egui_ctx.set_fonts(fonts);
 
         let config = if let Some(storage) = cc.storage {
