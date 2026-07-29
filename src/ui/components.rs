@@ -92,7 +92,7 @@ pub fn confirm_dialog(ctx: &Context, title: &str, message: &str, on_confirm: imp
 /// Toast notification (brief popup)
 pub fn toast(ctx: &Context, message: &str, duration_secs: f32) {
     // Simple implementation - could be enhanced with animation
-    Area::new("toast")
+    Area::new("toast".into())
         .anchor(Align2::RIGHT_BOTTOM, vec2(-20.0, -20.0))
         .show(ctx, |ui| {
             Frame::popup(ui.style())
