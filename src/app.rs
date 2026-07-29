@@ -158,7 +158,6 @@ impl DpfApp {
         {
             fonts.font_data.insert(
                 "inter".to_owned(),
-                egui::FontData::from_static(include_bytes!("../assets/Inter-Regular.ttf")),
             );
             fonts.families
                 .entry(egui::FontFamily::Proportional)
